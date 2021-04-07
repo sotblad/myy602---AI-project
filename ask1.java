@@ -5,9 +5,42 @@
 */
 
 import java.util.*;
-import java.util.Scanner;
 
 public class ask1 {
+	
+	static class Node {
+	    public List<Integer> data; //data for storage
+	    public List<Node> children;//array will keep children
+	    public Node parent;//parent to start the tree
+	    public boolean found;
+
+	    public Node(List<Integer> data) {
+	        children = new ArrayList<>();
+	        this.found = false;
+	        this.data = data;
+	    }
+
+	    public Node addChild(Node node) {
+	        children.add(node);
+	        node.parent = this;
+	        node.found = false;
+	        return this;
+	    }
+	    
+	    public Node getParent() {
+	    	return this.parent;
+	    }
+	    
+	    public List<Node> getChildren() {
+	    	return this.children;
+	    }
+	    
+	    public List<Integer> getData() {
+	    	return this.data;
+	    }
+	}
+	
+	 Node root;
 
 	static Scanner Scan = new Scanner(System.in);
 	
@@ -77,9 +110,43 @@ public class ask1 {
 		
 		AL.addAll(AR); // rAL becomes b
 		
-		System.out.println(AL);
-		
 		return AL; // return b
+	}
+	
+	public static Node createTree(int N, Node root) {
+		List<Integer> want = new ArrayList<Integer>(root.getData());
+		Collections.sort(want);
+		if(N == 1)
+			return null;
+		
+		Node currNode = root;
+		int layer = 0;
+		int count = 0;
+		while(layer < 10) {
+			for(int j = 0;j < N+1;j++) { // layers
+				for(int i = 0;i < N;i++) {
+					List<Integer> operData = operator(i+1,N,currNode.getData());
+					currNode.addChild(new Node(operData));
+					if(operData.equals(want)) {
+						currNode.found = true;
+						System.out.println(layer + " " + j + " " + i);
+					}
+				}
+				if(j != 0)
+					currNode = currNode.parent;
+				if(j <= N-1)
+					currNode = currNode.getChildren().get(j);
+			}
+			if(count == N)
+				count = 0;
+			currNode = currNode.getChildren().get(count);
+			count += 1;
+			layer += 1;
+		}
+		
+		currNode = root;
+		
+		return currNode;
 	}
 	
 	public static void main(String[] args) {
@@ -93,7 +160,7 @@ public class ask1 {
 		
 		
 		while(true) {
-			System.out.println("Please enter the index for the T operator: ");
+			System.out.println("Please enter the index for the T operator (0 or less to exit): ");
 			
 			String Tindex = Scan.nextLine();
 			if(Integer.parseInt(Tindex) <= 0) { // if <=0 exit
@@ -104,5 +171,11 @@ public class ask1 {
 			System.out.println("Calling T(" + Tindex + "), returned b = " + operator(Integer.parseInt(Tindex), N, initState));
 		}
 		Scan.close();
+		
+		//Test tree
+		Node root = new Node(initState);
+		Node test = createTree(N, root);
+		if(test!= null)
+			System.out.println(test.getChildren().size());
 	}
 }
