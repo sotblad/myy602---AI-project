@@ -114,39 +114,46 @@ public class ask1 {
 	}
 	
 	public static Node createTree(int N, Node root) {
-		List<Integer> want = new ArrayList<Integer>(root.getData());
-		Collections.sort(want);
 		if(N == 1)
 			return null;
-		
-		Node currNode = root;
-		int layer = 0;
-		int count = 0;
-		while(layer < 10) {
-			for(int j = 0;j < N+1;j++) { // layers
-				for(int i = 0;i < N;i++) {
-					List<Integer> operData = operator(i+1,N,currNode.getData());
-					currNode.addChild(new Node(operData));
-					if(operData.equals(want)) {
-						currNode.found = true;
-						System.out.println(layer + " " + j + " " + i);
-					}
-				}
-				if(j != 0)
-					currNode = currNode.parent;
-				if(j <= N-1)
-					currNode = currNode.getChildren().get(j);
-			}
-			if(count == N)
-				count = 0;
-			currNode = currNode.getChildren().get(count);
-			count += 1;
-			layer += 1;
+		List<Integer> want = new ArrayList<Integer>(root.getData());
+		Collections.sort(want);
+
+		if(root.getData().equals(want)) {
+			System.out.println("Initial state is sorted. Exiting");
+			return root;
 		}
 		
-		currNode = root;
+		Node currNode = root;
 		
-		return currNode;
+		List<Node> nodelist = new ArrayList<Node>();
+		nodelist.add(root);
+		
+		for(int i = 0;i < nodelist.size();i++) {
+			currNode = nodelist.get(0); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
+			
+			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
+				List<Integer> operData = operator(j+1,N,currNode.getData());
+				Node createdChild = new Node(operData);
+				currNode.addChild(createdChild); // eftiaksa 1 paidi
+				nodelist.add(createdChild); // vale to paidi sto "queue"
+					
+				if(operData.equals(want)) {
+					createdChild.found = true;
+					
+					int layer = 1;
+					while(currNode.getParent() != null) { // count how many layers there are
+						currNode = currNode.getParent();
+						layer += 1;
+					}
+					System.out.println("STAMATAW TO CREATION, VRETHIKE, POG. STO EPIPEDO: " + layer);
+					return createdChild;
+				}
+			}
+			nodelist.remove(0);
+		}
+		
+		return root;
 	}
 	
 	public static void main(String[] args) {
@@ -158,8 +165,8 @@ public class ask1 {
 		
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
-		
-		while(true) {
+		// kwdikas gia testing tous telestes
+		/*while(true) {
 			System.out.println("Please enter the index for the T operator (0 or less to exit): ");
 			
 			String Tindex = Scan.nextLine();
@@ -170,12 +177,12 @@ public class ask1 {
 			
 			System.out.println("Calling T(" + Tindex + "), returned b = " + operator(Integer.parseInt(Tindex), N, initState));
 		}
-		Scan.close();
+		Scan.close();*/
 		
-		//Test tree
-		Node root = new Node(initState);
-		Node test = createTree(N, root);
-		if(test!= null)
-			System.out.println(test.getChildren().size());
+		// ftiaxnei to dentro
+		Node root = new Node(initState); // ftiaxnei thn riza me contents to array pou tou dwsame
+		Node tree = createTree(N, root);
+		if(tree != null)
+			System.out.println(tree.getData());
 	}
 }
