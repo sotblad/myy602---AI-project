@@ -39,8 +39,6 @@ public class ask1 {
 	    	return this.data;
 	    }
 	}
-	
-	 Node root;
 
 	static Scanner Scan = new Scanner(System.in);
 	
@@ -72,13 +70,17 @@ public class ask1 {
 			//Check integrity
 			List<Integer> sortedList = new ArrayList<Integer>(initState);
 			Collections.sort(sortedList);
-			
-			for(int i = 0;i < sortedList.size()-1;i++) {
-				if(sortedList.get(i+1) != sortedList.get(i) + 1) {
-					if(!error)
-						System.out.println("Invalid list values format passed, please retry.");
-					error = true;
+			if(sortedList.get(0) == 1) {
+				for(int i = 0;i < sortedList.size()-1;i++) {
+					if(sortedList.get(i+1) != sortedList.get(i) + 1) {
+						if(!error)
+							System.out.println("Invalid list values format passed, please retry.");
+						error = true;
+					}
 				}
+			}else {
+				System.out.println("Invalid list values format passed, please retry.");
+				error = true;
 			}
 			
 			invalid = false;
@@ -166,7 +168,7 @@ public class ask1 {
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
 		// kwdikas gia testing tous telestes
-		/*while(true) {
+	/*	while(true) {
 			System.out.println("Please enter the index for the T operator (0 or less to exit): ");
 			
 			String Tindex = Scan.nextLine();
