@@ -167,6 +167,32 @@ public class ask1 {
 		return Tlist;
 	}
 	
+	
+	/* EDW EINAI TO ALFA ASTERAKI */
+	public static int Astar(int bestCost, Node root) {
+		if(root.getChildren().size() == 0)
+			return -1;
+		List<Node> open = new ArrayList<Node>();
+		List<Node> close = new ArrayList<Node>();
+		List<Integer> want = new ArrayList<Integer>(root.getData());
+		Collections.sort(want);
+		int g = bestCost;
+		
+		open.add(root);
+		
+		System.out.println(g);
+		
+		/*while(open.size() != 0) {
+			Node currentNode = open.remove(0); 
+			
+			//for(int i = 0;i<)
+			
+		}*/
+		
+
+		return 0;
+	}
+	
 	public static void main(String[] args) {
 		List<Integer> initState = createInitList();
 		int N = 0; //initialize N
@@ -190,6 +216,8 @@ public class ask1 {
 			}
 		}
 		
+		Astar(path.size(),root);
+	/*	
 		// CHECK OTI TO PATH EINAI SWSTO
 		// kwdikas gia testing tous telestes
 		while(true) {
@@ -206,6 +234,6 @@ public class ask1 {
 			System.out.println("Calling T(" + Tindex + "), returned b = " + result);
 		}
 		Scan.close();
-		
+		*/
 	}
 }
