@@ -32,11 +32,10 @@ public class ask2 {
 
     	JFrame f = new JFrame("Board");
         f.add(board.getGui());
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    f.setLocationByPlatform(true);
 
         f.pack();
-
         f.setMinimumSize(f.getSize());
         f.setVisible(true);
         
