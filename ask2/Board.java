@@ -17,6 +17,8 @@ public class Board {
 	private JPanel board;
 	JButton[][] squares;
 	Boolean blackOut = true;
+	Boolean setPlayerStart1 = false;
+	Boolean setPlayerStart2 = false;
     
     Board(JPanel gui, int N) {
     	this.gui = gui;
@@ -37,8 +39,10 @@ public class Board {
                 b.setBorderPainted(true);
                 b.setBorder(new LineBorder(Color.BLACK));
                 b.setOpaque(true);
+                
                 squares[i][j]= b;
                 board.add(squares[i][j]);
+                
                 squares[i][j].addActionListener(
                 	new ActionListener(){
 	                	public void actionPerformed(ActionEvent e) {
@@ -48,8 +52,35 @@ public class Board {
 		                		for(int i = 0;i < N; i++) {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
-		                					changeColor(i,j);
+		                					changeColor(i,j,0);
 		                					return;
+		                				}
+		                			}
+		                		}
+	                		}else if(setPlayerStart1) {
+								Object source = e.getSource();
+		                		for(int i = 0;i < N; i++) {
+		                			for(int j = 0;j < N; j++) {
+		                				if(source == squares[i][j]) {
+		                					if(squares[i][j].getBackground() != Color.BLACK) {
+			                					changeColor(i,j,1);
+			                					setPlayerStart1 = false;
+			                					setPlayerStart2 = true; // set Player2 start point
+			                					return;
+		                					}
+		                				}
+		                			}
+		                		}
+	                		}else if(setPlayerStart2) {
+								Object source = e.getSource();
+		                		for(int i = 0;i < N; i++) {
+		                			for(int j = 0;j < N; j++) {
+		                				if(source == squares[i][j]) {
+		                					if(squares[i][j].getBackground() != Color.BLACK) {
+			                					changeColor(i,j,2);
+			                					setPlayerStart2 = false; // finish placings
+			                					return;
+		                					}
 		                				}
 		                			}
 		                		}
@@ -70,17 +101,27 @@ public class Board {
     	};
     	
     	board.registerKeyboardAction(action, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-    	while(blackOut) {
-    		if(!blackOut)  // blackOut ended, continue in main
+    	while(blackOut == true) {
+    		System.out.print(""); // makes the wait volatile
+    		if(blackOut == false) {  // blackOut ended, continue
     			break;
+    		}
+    		continue;
     	}
+    	setPlayerStart1 = true; // set Player1 start point
     }
     
     public final JComponent getGui() {
         return gui;
     }
     
-    public void changeColor(int i, int j) {
+    public void changeColor(int i, int j, int color) {
+    	if(color == 0) {
     	squares[i][j].setBackground(Color.BLACK);
+    	}else if(color == 1) {
+    		squares[i][j].setBackground(Color.CYAN);
+    	}else if(color == 2) {
+    		squares[i][j].setBackground(Color.RED);
+    	}
     }
 }
