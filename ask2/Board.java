@@ -10,37 +10,33 @@ import javax.swing.border.LineBorder;
 
 public class Board {
 	private JPanel gui;
-	private JButton[][] boardSquares;
-	JPanel board;
+	private JPanel board;
     
-    Board(JPanel gui, int N) {
+    Board(JPanel gui, int N, Integer[][] blackPreset) {
     	this.gui = gui;
-        initializeGui(gui, N);
+    	board = new JPanel(new GridLayout(0, N));
+        initializeGui(gui, N, blackPreset);
     }
 
-    public final void initializeGui(JPanel gui, int N) {
-    	boardSquares = new JButton[N][N];
-      
-        board = new JPanel(new GridLayout(0, N+1));
+    public final void initializeGui(JPanel gui, int N, Integer[][] blackPreset) {
         gui.add(board);
 
-        for (int i = 0; i < boardSquares.length; i++) {
-            for (int j = 0; j < boardSquares[i].length; j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
             	JButton b = new JButton();
                 b.setPreferredSize(new Dimension(100, 100));
                 b.setForeground(Color.BLACK);
-                b.setBackground(Color.WHITE);
+                if(blackPreset[i][j] == 1) {
+                	b.setBackground(Color.BLACK);
+                }else {
+                	b.setBackground(Color.WHITE);
+                }
                 b.setBorderPainted(true);
                 b.setBorder(new LineBorder(Color.BLACK));
                 b.setOpaque(true);
                 board.add(b);
             }
-            board.add(new JLabel());
         }
-    }
-    
-    public final JButton[][] getBoardSquares() {
-        return boardSquares;
     }
 
     public final JComponent getGui() {
