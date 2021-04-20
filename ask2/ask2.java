@@ -28,7 +28,7 @@ public class ask2 {
     	
     	blackPreset = setBlackPreset(N, blackPreset);
     	
-    	Board board = new Board(new JPanel(), N, blackPreset);
+    	Board board = new Board(new JPanel(), N);
 
     	JFrame f = new JFrame("Board");
         f.add(board.getGui());
@@ -39,6 +39,8 @@ public class ask2 {
 
         f.setMinimumSize(f.getSize());
         f.setVisible(true);
+        
+        board.blackOut(); // blackOut squares
         
     }
 }
