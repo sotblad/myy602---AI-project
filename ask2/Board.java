@@ -19,6 +19,11 @@ public class Board {
 	Boolean blackOut = true;
 	Boolean setPlayerStart1 = false;
 	Boolean setPlayerStart2 = false;
+	Boolean startGame = false;
+	Boolean displayMoves = false;
+	Boolean P1makeMove = false;
+	Object P1;
+	Object Dionisis;
     
     Board(JPanel gui, int N) {
     	this.gui = gui;
@@ -64,6 +69,7 @@ public class Board {
 		                				if(source == squares[i][j]) {
 		                					if(squares[i][j].getBackground() != Color.BLACK) {
 			                					changeColor(i,j,1);
+			                					P1 = squares[i][j];
 			                					setPlayerStart1 = false;
 			                					setPlayerStart2 = true; // set Player2 start point
 			                					JOptionPane.showMessageDialog(null, "Set the starting point of Player2");
@@ -77,12 +83,44 @@ public class Board {
 		                		for(int i = 0;i < N; i++) {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
-		                					if(squares[i][j].getBackground() != Color.BLACK) {
+		                					if(squares[i][j].getBackground() != Color.BLACK && squares[i][j].getBackground() != Color.CYAN) {
 			                					changeColor(i,j,2);
 			                					setPlayerStart2 = false; // finish placings
-			                					JOptionPane.showMessageDialog(null, "oyun şimdi başlıyor, hazırlanın");
+			                					startGame = true;
+			                					displayMoves = true;
+			                					JOptionPane.showMessageDialog(null, "oyun simdi basliyor, hazirlanin");
 			                					return;
 		                					}
+		                				}
+		                			}
+		                		}
+	                		}else if(startGame) {
+								Object source = e.getSource();
+		                		for(int i = 0;i < N; i++) {
+		                			for(int j = 0;j < N; j++) {
+		                				if(source == squares[i][j]) {
+		                					if(displayMoves) {
+			                					if(squares[i][j].getBackground() == Color.CYAN) {
+			                						highlightLegal(i,j, N);
+			                						P1makeMove = true;
+			                						displayMoves = false;
+				                					return;
+			                					}
+			                				}else if(P1makeMove) {
+			                					if(squares[i][j].getBackground() == Color.GRAY) {
+			                						for(int k =0;k<N;k++) {
+			                							for(int l =0;l< N;l++) {
+			        		                				if(squares[k][l].getBackground() == Color.GRAY) {
+			        		                					squares[k][l].setBackground(Color.WHITE);
+			        		                				}else if(squares[k][l].getBackground() == Color.CYAN) {
+			        		                					squares[k][l].setBackground(Color.BLACK);
+			        		                				}
+			                							}
+			                						}
+			                						squares[i][j].setBackground(Color.CYAN);
+			                						displayMoves = true;
+			                					}
+			                				}
 		                				}
 		                			}
 		                		}
@@ -118,6 +156,64 @@ public class Board {
         return gui;
     }
     
+    public void highlightLegal(int i, int j, int N) {
+    	int freeBlocks = 0;
+    	
+    	if(j-1 < N && j-1 >= 0) { // aristera
+    		if(squares[i][j-1].getBackground() != Color.BLACK && squares[i][j-1].getBackground() != Color.RED) {
+    			changeColor(i,j-1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(j+1 < N) { // deksia
+    		if(squares[i][j+1].getBackground() != Color.BLACK && squares[i][j+1].getBackground() != Color.RED) {
+    			changeColor(i,j+1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	
+    	if(i+1 < N) { // katw
+    		if(squares[i+1][j].getBackground() != Color.BLACK && squares[i+1][j].getBackground() != Color.RED) {
+    			changeColor(i+1,j,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(i+1 < N && j-1 < N && j-1 >= 0) { // katw aristera
+    		if(squares[i+1][j-1].getBackground() != Color.BLACK && squares[i+1][j-1].getBackground() != Color.RED) {
+    			changeColor(i+1,j-1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(i+1 < N && j+1 < N) { // katw deksia
+    		if(squares[i+1][j+1].getBackground() != Color.BLACK && squares[i+1][j+1].getBackground() != Color.RED) {
+    			changeColor(i+1,j+1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(i-1 < N && i -1 >= 0) { // panw
+    		if(squares[i-1][j].getBackground() != Color.BLACK && squares[i-1][j].getBackground() != Color.RED) {
+    			changeColor(i-1,j,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(i-1 < N && i-1 >= 0 && j+1 < N) { // panw deksia
+    		if(squares[i-1][j+1].getBackground() != Color.BLACK && squares[i-1][j+1].getBackground() != Color.RED) {
+    			changeColor(i-1,j+1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(i-1 < N && j-1 < N && i-1 >= 0 && j-1 >= 0) { // panw aristera
+    		if(squares[i-1][j-1].getBackground() != Color.BLACK && squares[i-1][j-1].getBackground() != Color.RED) {
+    			changeColor(i-1,j-1,3);
+    			freeBlocks += 1;
+    		}
+    	}
+    	if(freeBlocks == 0) {
+    		JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+    	}
+    	
+    }
+    
     public void changeColor(int i, int j, int color) {
     	if(color == 0) {
     	squares[i][j].setBackground(Color.BLACK);
@@ -125,6 +221,10 @@ public class Board {
     		squares[i][j].setBackground(Color.CYAN);
     	}else if(color == 2) {
     		squares[i][j].setBackground(Color.RED);
+    		squares[i][j].setIcon( new ImageIcon("/Users/sotirisp/Desktop/niar.jpg") );
+    	}else if(color == 3) {
+    		squares[i][j].setBackground(Color.GRAY);
     	}
+    	
     }
 }
