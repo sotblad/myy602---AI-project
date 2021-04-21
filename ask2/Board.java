@@ -66,6 +66,7 @@ public class Board {
 			                					changeColor(i,j,1);
 			                					setPlayerStart1 = false;
 			                					setPlayerStart2 = true; // set Player2 start point
+			                					JOptionPane.showMessageDialog(null, "Set the starting point of Player2");
 			                					return;
 		                					}
 		                				}
@@ -79,6 +80,7 @@ public class Board {
 		                					if(squares[i][j].getBackground() != Color.BLACK) {
 			                					changeColor(i,j,2);
 			                					setPlayerStart2 = false; // finish placings
+			                					JOptionPane.showMessageDialog(null, "oyun şimdi başlıyor, hazırlanın");
 			                					return;
 		                					}
 		                				}
@@ -109,6 +111,7 @@ public class Board {
     		continue;
     	}
     	setPlayerStart1 = true; // set Player1 start point
+    	JOptionPane.showMessageDialog(null, "Set the starting point of Player1");
     }
     
     public final JComponent getGui() {
