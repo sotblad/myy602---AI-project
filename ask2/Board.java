@@ -16,24 +16,25 @@ public class Board {
 	private JPanel gui;
 	private JPanel board;
 	JButton[][] squares;
+	int N;
 	Boolean blackOut = true;
 	Boolean setPlayerStart1 = false;
 	Boolean setPlayerStart2 = false;
 	Boolean startGame = false;
 	Boolean displayMoves = false;
 	Boolean P1makeMove = false;
-	Boolean DionisisMove = false;
 	Object P1;
 	Object Dionisis;
     
-    Board(JPanel gui, int N) {
-    	this.gui = gui;
+    Board(JPanel getGui, int arrayLen) {
+    	gui = getGui;
+    	N = arrayLen;
     	squares =new JButton[N][N];
     	board = new JPanel(new GridLayout(0, N));
-        initializeGui(gui, N);
+        initializeGui();
     }
 
-    public final void initializeGui(JPanel gui, int N) {
+    public final void initializeGui() {
         gui.add(board);
 
         for (int i = 0; i < N; i++) {
@@ -103,7 +104,7 @@ public class Board {
 		                				if(source == squares[i][j]) {
 		                					if(displayMoves) {
 			                					if(squares[i][j].getBackground() == Color.CYAN) {
-			                						highlightLegal(i,j, N);
+			                						highlightLegal(i,j);
 			                						P1makeMove = true;
 			                						displayMoves = false;
 				                					return;
@@ -122,16 +123,9 @@ public class Board {
 			                						squares[i][j].setBackground(Color.CYAN);
 			                						displayMoves = true;
 			                						P1makeMove = false;
-			                						DionisisMove = true;
 			                						dionisisMove();
 			                					}
 			                				}
-			                				//else if(DionisisMove) {
-			                				//	JOptionPane.showMessageDialog(null, "eimai o dionisis kai epeksa");
-			                				//	DionisisMove = false;
-			                				//	displayMoves = true;
-			                				//	return;
-			                				//}
 		                				}
 		                			}
 		                		}
@@ -143,7 +137,13 @@ public class Board {
     }
     
     public void dionisisMove() {
-    	JOptionPane.showMessageDialog(null, "eimai o dionisis kai epeksa");
+    	for(int i = 0;i < N; i++) {
+			for(int j = 0;j < N; j++) {
+				if(squares[i][j].getBackground() == Color.RED) {
+					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j);
+				}
+			}
+    	}
     }
     
     public void blackOut(){
@@ -172,7 +172,7 @@ public class Board {
         return gui;
     }
     
-    public void highlightLegal(int i, int j, int N) {
+    public void highlightLegal(int i, int j) {
     	int freeBlocks = 0;
     	
     	if(j-1 < N && j-1 >= 0) { // aristera
