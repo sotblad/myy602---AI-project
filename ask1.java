@@ -19,6 +19,7 @@ public class ask1 {
 	        children = new ArrayList<>();
 	        this.found = false;
 	        this.data = data;
+	        this.opNum = 0;
 	    }
 
 	    public Node addChild(int opNum, Node node) {
@@ -138,34 +139,36 @@ public class ask1 {
 		List<Node> nodelist = new ArrayList<Node>();
 		nodelist.add(root);
 		
-		for(int i = 0;i < nodelist.size();i++) {
+		while(nodelist.size() != 0) {
 			currNode = nodelist.get(0); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
-			
+
 			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
 				List<Integer> operData = operator(j+1,N,currNode.getData());
 				Node createdChild = new Node(operData);
-				currNode.addChild((j+1),createdChild); // eftiaksa 1 paidi
-				totalExpansions += 1;
-				nodelist.add(createdChild); // vale to paidi sto "queue"
+				
+				if(j+1 != currNode.getOpNum()) {
+					currNode.addChild((j+1),createdChild); // eftiaksa 1 paidi
+					nodelist.add(createdChild); // vale to paidi sto "queue"
+					totalExpansions += 1;
 					
-				if(operData.equals(want)) {
-					createdChild.found = true;
-					
-					int layer = 0;
-					currNode = createdChild;
-					while(currNode.getParent() != null) { // count how many layers there are
-						Tlist.add(currNode.getOpNum());
-						currNode = currNode.getParent();
-						layer += 1;
+					if(operData.equals(want)) {
+						createdChild.found = true;
+						
+						int layer = 0;
+						currNode = createdChild;
+						while(currNode.getParent() != null) { // count how many layers there are
+							Tlist.add(currNode.getOpNum());
+							currNode = currNode.getParent();
+							layer += 1;
+						}
+						System.out.println("Cost: " + layer);
+						System.out.println("Total expansions: " + totalExpansions);
+						return Tlist;
 					}
-					System.out.println("Cost: " + layer);
-					System.out.println("Total expansions: " + totalExpansions);
-					return Tlist;
 				}
 			}
 			nodelist.remove(0);
 		}
-		
 		return Tlist;
 	}
 	
