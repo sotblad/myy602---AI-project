@@ -177,7 +177,7 @@ public class Board {
 						return;
 					}
 					
-					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
+			//		JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
 					return;
 				}
 			}
