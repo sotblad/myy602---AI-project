@@ -104,7 +104,7 @@ public class Board {
 		                				if(source == squares[i][j]) {
 		                					if(displayMoves) {
 			                					if(squares[i][j].getBackground() == Color.CYAN) {
-			                						highlightLegal(i,j);
+			                						highlightLegal(calculateLegal(i,j,1));
 			                						P1makeMove = true;
 			                						displayMoves = false;
 				                					return;
@@ -121,6 +121,10 @@ public class Board {
 			                							}
 			                						}
 			                						squares[i][j].setBackground(Color.CYAN);
+			                						if(calculateLegal(i,j,1).size() == 0) {
+			                							JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+			                						}
+			                			
 			                						displayMoves = true;
 			                						P1makeMove = false;
 			                						dionisisMove();
@@ -137,10 +141,19 @@ public class Board {
     }
     
     public void dionisisMove() {
+    	
+    	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList;
+    	
     	for(int i = 0;i < N; i++) {
 			for(int j = 0;j < N; j++) {
 				if(squares[i][j].getBackground() == Color.RED) {
-					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j);
+					pairList = calculateLegal(i,j,2);
+					if(pairList.size() == 0) {
+						JOptionPane.showMessageDialog(null, "Kys noob you lost by PLAYER. nmsl");
+					}
+					// TODO: pare to legal moves list, dialekse mia random kai metakinise ton dionisi
+					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " " + pairList.size());
+					return;
 				}
 			}
     	}
@@ -172,62 +185,91 @@ public class Board {
         return gui;
     }
     
-    public void highlightLegal(int i, int j) {
-    	int freeBlocks = 0;
+    public java.util.List<java.util.Map.Entry<Integer,Integer>> calculateLegal(int i, int j, int player) {
+    	
+    	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList= new java.util.ArrayList<>();
     	
     	if(j-1 < N && j-1 >= 0) { // aristera
-    		if(squares[i][j-1].getBackground() != Color.BLACK && squares[i][j-1].getBackground() != Color.RED) {
-    			changeColor(i,j-1,3);
-    			freeBlocks += 1;
+    		if(squares[i][j-1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i][j-1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i,j-1));
+    			}else if(player == 2 && squares[i][j-1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i,j-1));
+    			}
     		}
     	}
     	if(j+1 < N) { // deksia
-    		if(squares[i][j+1].getBackground() != Color.BLACK && squares[i][j+1].getBackground() != Color.RED) {
-    			changeColor(i,j+1,3);
-    			freeBlocks += 1;
+    		if(squares[i][j+1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i][j+1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i,j+1));
+    			}else if(player == 2 && squares[i][j+1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i,j+1));
+    			}
     		}
     	}
     	
     	if(i+1 < N) { // katw
-    		if(squares[i+1][j].getBackground() != Color.BLACK && squares[i+1][j].getBackground() != Color.RED) {
-    			changeColor(i+1,j,3);
-    			freeBlocks += 1;
+    		if(squares[i+1][j].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i+1][j].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j));
+    			}else if(player == 2 && squares[i+1][j].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j));
+    			}
     		}
     	}
     	if(i+1 < N && j-1 < N && j-1 >= 0) { // katw aristera
-    		if(squares[i+1][j-1].getBackground() != Color.BLACK && squares[i+1][j-1].getBackground() != Color.RED) {
-    			changeColor(i+1,j-1,3);
-    			freeBlocks += 1;
+    		if(squares[i+1][j-1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i+1][j-1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j-1));
+    			}else if(player == 2 && squares[i+1][j-1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j-1));
+    			}
     		}
     	}
     	if(i+1 < N && j+1 < N) { // katw deksia
-    		if(squares[i+1][j+1].getBackground() != Color.BLACK && squares[i+1][j+1].getBackground() != Color.RED) {
-    			changeColor(i+1,j+1,3);
-    			freeBlocks += 1;
+    		if(squares[i+1][j+1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i+1][j+1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j+1));
+    			}else if(player == 2 && squares[i+1][j+1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i+1,j+1));
+    			}
     		}
     	}
     	if(i-1 < N && i -1 >= 0) { // panw
-    		if(squares[i-1][j].getBackground() != Color.BLACK && squares[i-1][j].getBackground() != Color.RED) {
-    			changeColor(i-1,j,3);
-    			freeBlocks += 1;
+    		if(squares[i-1][j].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i-1][j].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j));
+    			}else if(player == 2 && squares[i-1][j].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j));
+    			}
     		}
     	}
     	if(i-1 < N && i-1 >= 0 && j+1 < N) { // panw deksia
-    		if(squares[i-1][j+1].getBackground() != Color.BLACK && squares[i-1][j+1].getBackground() != Color.RED) {
-    			changeColor(i-1,j+1,3);
-    			freeBlocks += 1;
+    		if(squares[i-1][j+1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i-1][j+1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j+1));
+    			}else if(player == 2 && squares[i-1][j+1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j+1));
+    			}
     		}
     	}
     	if(i-1 < N && j-1 < N && i-1 >= 0 && j-1 >= 0) { // panw aristera
-    		if(squares[i-1][j-1].getBackground() != Color.BLACK && squares[i-1][j-1].getBackground() != Color.RED) {
-    			changeColor(i-1,j-1,3);
-    			freeBlocks += 1;
+    		if(squares[i-1][j-1].getBackground() != Color.BLACK) {
+    			if(player == 1 && squares[i-1][j-1].getBackground() != Color.RED) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j-1));
+    			}else if(player == 2 && squares[i-1][j-1].getBackground() != Color.CYAN) {
+    				pairList.add(new java.util.AbstractMap.SimpleEntry<>(i-1,j-1));
+    			}
     		}
     	}
-    	if(freeBlocks == 0) {
-    		JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+
+    	return pairList;
+    }
+    
+    public void highlightLegal(java.util.List<java.util.Map.Entry<Integer,Integer>> list) {
+    	for(int i = 0;i<list.size();i++) {
+    		changeColor(list.get(i).getKey(),list.get(i).getValue(),3);
     	}
-    	
     }
     
     public void changeColor(int i, int j, int color) {
