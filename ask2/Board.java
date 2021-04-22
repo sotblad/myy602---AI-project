@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Map.Entry;
+import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -159,6 +161,14 @@ public class Board {
 						return;
 					}
 					// TODO: pare to legal moves list, dialekse mia random kai metakinise ton dionisi
+					
+					Entry<Integer,Integer> nextMove = getRandomElement(pairList);
+					
+					System.out.println("tha paw sto " + nextMove.getKey() + nextMove.getValue());
+					squares[i][j].setBackground(Color.BLACK);
+					squares[i][j].setIcon(null);
+					changeColor(nextMove.getKey(),nextMove.getValue(),2);
+					
 					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
 					return;
 				}
@@ -277,6 +287,12 @@ public class Board {
     	for(int i = 0;i<list.size();i++) {
     		changeColor(list.get(i).getKey(),list.get(i).getValue(),3);
     	}
+    }
+    
+    public Entry<Integer, Integer> getRandomElement(java.util.List<java.util.Map.Entry<Integer,Integer>> list)
+    {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
     }
     
     public void changeColor(int i, int j, int color) {
