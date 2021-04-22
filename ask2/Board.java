@@ -23,6 +23,7 @@ public class Board {
 	Boolean startGame = false;
 	Boolean displayMoves = false;
 	Boolean P1makeMove = false;
+	Boolean gameEnded = false;
 	Object P1;
 	Object Dionisis;
     
@@ -123,6 +124,9 @@ public class Board {
 			                						squares[i][j].setBackground(Color.CYAN);
 			                						if(calculateLegal(i,j,1).size() == 0) {
 			                							JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+			                							gameEnded = true;
+			                							startGame = false;
+			                							return;
 			                						}
 			                			
 			                						displayMoves = true;
@@ -150,9 +154,12 @@ public class Board {
 					pairList = calculateLegal(i,j,2);
 					if(pairList.size() == 0) {
 						JOptionPane.showMessageDialog(null, "Kys noob you lost by PLAYER. nmsl");
+						startGame = false;
+						gameEnded = true;
+						return;
 					}
 					// TODO: pare to legal moves list, dialekse mia random kai metakinise ton dionisi
-					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " " + pairList.size());
+					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
 					return;
 				}
 			}
