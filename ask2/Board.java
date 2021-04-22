@@ -22,6 +22,7 @@ public class Board {
 	Boolean startGame = false;
 	Boolean displayMoves = false;
 	Boolean P1makeMove = false;
+	Boolean DionisisMove = false;
 	Object P1;
 	Object Dionisis;
     
@@ -88,7 +89,8 @@ public class Board {
 			                					setPlayerStart2 = false; // finish placings
 			                					startGame = true;
 			                					displayMoves = true;
-			                					JOptionPane.showMessageDialog(null, "oyun simdi basliyor, hazirlanin");
+			                					JOptionPane.showMessageDialog(null, "game starts");
+			                					dionisisMove();
 			                					return;
 		                					}
 		                				}
@@ -119,8 +121,17 @@ public class Board {
 			                						}
 			                						squares[i][j].setBackground(Color.CYAN);
 			                						displayMoves = true;
+			                						P1makeMove = false;
+			                						DionisisMove = true;
+			                						dionisisMove();
 			                					}
 			                				}
+			                				//else if(DionisisMove) {
+			                				//	JOptionPane.showMessageDialog(null, "eimai o dionisis kai epeksa");
+			                				//	DionisisMove = false;
+			                				//	displayMoves = true;
+			                				//	return;
+			                				//}
 		                				}
 		                			}
 		                		}
@@ -130,6 +141,11 @@ public class Board {
             }
         }
     }
+    
+    public void dionisisMove() {
+    	JOptionPane.showMessageDialog(null, "eimai o dionisis kai epeksa");
+    }
+    
     public void blackOut(){
     	JOptionPane.showMessageDialog(null, "Please select which boxes you want initially blacked out.\nPress ESC when finished.");
     	KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -224,6 +240,7 @@ public class Board {
     		squares[i][j].setIcon( new ImageIcon("/Users/sotirisp/Desktop/niar.jpg") );
     	}else if(color == 3) {
     		squares[i][j].setBackground(Color.GRAY);
+    		
     	}
     	
     }
