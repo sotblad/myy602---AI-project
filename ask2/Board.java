@@ -169,6 +169,14 @@ public class Board {
 					squares[i][j].setIcon(null);
 					changeColor(nextMove.getKey(),nextMove.getValue(),2);
 					
+					pairList = calculateLegal(nextMove.getKey(),nextMove.getValue(),2);
+					if(pairList.size() == 0) {
+						JOptionPane.showMessageDialog(null, "Kys noob you lost by PLAYER. nmsl");
+						startGame = false;
+						gameEnded = true;
+						return;
+					}
+					
 					JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
 					return;
 				}
