@@ -132,7 +132,7 @@ public class ask1 {
 			System.out.println("Initial state is sorted. Exiting");
 			return Tlist;
 		}
-		
+		int totalExpansions = 0;
 		Node currNode = root;
 		
 		List<Node> nodelist = new ArrayList<Node>();
@@ -145,6 +145,7 @@ public class ask1 {
 				List<Integer> operData = operator(j+1,N,currNode.getData());
 				Node createdChild = new Node(operData);
 				currNode.addChild((j+1),createdChild); // eftiaksa 1 paidi
+				totalExpansions += 1;
 				nodelist.add(createdChild); // vale to paidi sto "queue"
 					
 				if(operData.equals(want)) {
@@ -157,7 +158,8 @@ public class ask1 {
 						currNode = currNode.getParent();
 						layer += 1;
 					}
-					System.out.println("STAMATAW TO CREATION, VRETHIKE, POG. KOSTOSSSSSSSSSS: " + layer);
+					System.out.println("Cost: " + layer);
+					System.out.println("Total expansions: " + totalExpansions);
 					return Tlist;
 				}
 			}
