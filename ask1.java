@@ -139,6 +139,8 @@ public class ask1 {
 		List<Node> nodelist = new ArrayList<Node>();
 		nodelist.add(root);
 		
+		List<List<Integer>> lista = new ArrayList<List<Integer>>();
+		
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(0); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 
@@ -146,9 +148,11 @@ public class ask1 {
 				List<Integer> operData = operator(j+1,N,currNode.getData());
 				Node createdChild = new Node(operData);
 				
-				if(j+1 != currNode.getOpNum()) {
+				
+				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
 					currNode.addChild((j+1),createdChild); // eftiaksa 1 paidi
 					nodelist.add(createdChild); // vale to paidi sto "queue"
+					lista.add(operData);
 					totalExpansions += 1;
 					
 					if(operData.equals(want)) {
