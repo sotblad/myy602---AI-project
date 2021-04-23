@@ -103,7 +103,8 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					minimax(1, 1, 2, true, 2); //no idea
+			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2, 1, 2, true, 2); //no idea
+			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					return;
 		                					}
 		                				}
@@ -152,7 +153,9 @@ public class Board {
 			}
 
 			//dionisisMove();
-			minimax(1, 1, 2, true, 2); //no idea
+			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2, 1, 2, true, 2); //no idea
+			
+			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 		}
     }
     
@@ -278,7 +281,7 @@ public void dionisisMoveTo(int k, int l) {
     	SimpleEntry<Entry<Integer, Integer>, Double> entry = null;
     		    
     	if(depth == 0 || gameEnded) {
-    		System.out.println(evaluate(maximizingColor));
+    		//System.out.println(evaluate(maximizingColor));
     		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(maximizingColor));
     	}
     	JButton[][] b = new JButton[N][N];
@@ -306,11 +309,12 @@ public void dionisisMoveTo(int k, int l) {
     					for(int k = 0;k < moves.size();k++) {
     						dionisisMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
     						Double current_eval = minimax(depth-1,alpha,beta,false,maximizingColor).getValue();
-    						for(int l = 0;l<squares.length;l++) {
-    				    		for(int m =0;m<squares[l].length;m++) {
-    				    			squares[l][m] = b[l][m];
-    				    		}
-    				    	}
+
+    						//undo
+    						squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
+    						squares[moves.get(k).getKey()][moves.get(k).getValue()].setIcon(null);
+    						changeColor(i,j,2);
+    						
     						if(current_eval > max_eval) {
     							max_eval = (double) current_eval;
     							best_move = moves.get(k);
@@ -343,11 +347,12 @@ public void dionisisMoveTo(int k, int l) {
     					for(int k = 0;k < moves.size();k++) {
     						playerMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
     						Double current_eval = minimax(depth-1,alpha,beta,true,maximizingColor).getValue();
-    						for(int l = 0;l<squares.length;l++) {
-    				    		for(int m =0;m<squares[l].length;m++) {
-    				    			squares[l][m] = b[l][m];
-    				    		}
-    				    	}
+    						
+    						//undo
+    						squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
+    						squares[moves.get(k).getKey()][moves.get(k).getValue()].setIcon(null);
+    						changeColor(i,j,1);
+    						
     						if(current_eval < min_eval) {
     							min_eval = (double) current_eval;
     							best_move = moves.get(k);
