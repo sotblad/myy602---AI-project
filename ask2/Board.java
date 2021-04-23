@@ -8,6 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -28,10 +31,14 @@ public class Board {
 	Boolean gameEnded = false;
 	Object P1;
 	Object Dionisis;
+	int PlayerScore;
+	int DionisisScore;
     
     Board(JPanel getGui, int arrayLen) {
     	gui = getGui;
     	N = arrayLen;
+    	PlayerScore = 30;
+    	DionisisScore = 40;
     	squares =new JButton[N][N];
     	board = new JPanel(new GridLayout(0, N));
         initializeGui();
@@ -96,7 +103,7 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					dionisisMove();
+			                					minimax(1, 1, 2, true, 2); //no idea
 			                					return;
 		                					}
 		                				}
@@ -144,7 +151,8 @@ public class Board {
 				return;
 			}
 
-			dionisisMove();
+			//dionisisMove();
+			minimax(1, 1, 2, true, 2); //no idea
 		}
     }
     
@@ -252,12 +260,116 @@ public void dionisisMoveTo(int k, int l) {
         return gui;
     }
     
-    public void minimax(int depth, int alpha, int beta, boolean maximizingPlayer, int maximizingColor) {
-    	if(depth == 0 || gameEnded)
-    	
-    	return;
+    
+    
+    
+    // MINIMAX UNDER CONSTRUCTION
+    
+    public Double evaluate(int maximizingPlayer) { // 1 -> P1, 2 -> dionisis
+    	if(maximizingPlayer == 1) {
+    		return (double) (PlayerScore - DionisisScore);
+    	}else {
+    		return (double) (DionisisScore - PlayerScore);
+    	}
     }
     
+    
+    public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int depth, int alpha, int beta, boolean maximizingPlayer, int maximizingColor) {
+    	SimpleEntry<Entry<Integer, Integer>, Double> entry = null;
+    		    
+    	if(depth == 0 || gameEnded) {
+    		System.out.println(evaluate(maximizingColor));
+    		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(maximizingColor));
+    	}
+    	JButton[][] b = new JButton[N][N];
+    	for(int k = 0;k<squares.length;k++) {
+    		for(int l =0;l<squares[k].length;l++) {
+    			b[k][l] = squares[k][l];
+    		}
+    	}
+    	
+    	if(maximizingPlayer) {
+    		for(int i = 0;i < N; i++) {
+    			for(int j = 0;j < N; j++) {
+    				if(squares[i][j].getBackground() == Color.RED) {
+    					List<Entry<Integer, Integer>> moves = calculateLegal(i,j,2);
+    					
+    					if(moves.size() == 0) {
+    						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
+    						startGame = false;
+    						gameEnded = true;
+    						return null;
+    					}
+    					Entry<Integer,Integer> best_move = getRandomElement(moves);
+    					
+    					Double max_eval = Double.NEGATIVE_INFINITY;
+    					for(int k = 0;k < moves.size();k++) {
+    						dionisisMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
+    						Double current_eval = minimax(depth-1,alpha,beta,false,maximizingColor).getValue();
+    						for(int l = 0;l<squares.length;l++) {
+    				    		for(int m =0;m<squares[l].length;m++) {
+    				    			squares[l][m] = b[l][m];
+    				    		}
+    				    	}
+    						if(current_eval > max_eval) {
+    							max_eval = (double) current_eval;
+    							best_move = moves.get(k);
+    						}
+    						Double getAlpha = Math.max(alpha, current_eval);
+    						if(beta <= getAlpha) {
+    							break;
+    						}	
+    					}
+    					return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(best_move,max_eval);
+    				}
+    			}
+    		}
+
+    	}else {
+    		for(int i = 0;i < N; i++) {
+    			for(int j = 0;j < N; j++) {
+    				if(squares[i][j].getBackground() == Color.CYAN) {
+    					List<Entry<Integer, Integer>> moves = calculateLegal(i,j,1);
+    					
+    					if(moves.size() == 0) {
+    						JOptionPane.showMessageDialog(null, "exases noobo");
+    						startGame = false;
+    						gameEnded = true;
+    						return null;
+    					}
+    					Entry<Integer,Integer> best_move = getRandomElement(moves);
+    					
+    					Double min_eval = Double.POSITIVE_INFINITY;
+    					for(int k = 0;k < moves.size();k++) {
+    						playerMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
+    						Double current_eval = minimax(depth-1,alpha,beta,true,maximizingColor).getValue();
+    						for(int l = 0;l<squares.length;l++) {
+    				    		for(int m =0;m<squares[l].length;m++) {
+    				    			squares[l][m] = b[l][m];
+    				    		}
+    				    	}
+    						if(current_eval < min_eval) {
+    							min_eval = (double) current_eval;
+    							best_move = moves.get(k);
+    						}
+    						Double getBeta = Math.min(beta, current_eval);
+    						if(getBeta <= alpha) {
+    							break;
+    						}	
+    					}
+    					return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(best_move,min_eval);
+    				}
+    			}
+    		}
+    	}
+    	
+    	return entry;
+    }
+    
+    
+    
+    
+    // end minimax
     
     
     public java.util.List<java.util.Map.Entry<Integer,Integer>> calculateLegal(int i, int j, int player) {
