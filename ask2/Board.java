@@ -103,7 +103,7 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
+			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
 			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
 			                					if(pairList.size() == 0) {
@@ -158,14 +158,14 @@ public class Board {
 			}
 			squares[i][j].setBackground(Color.CYAN);
 			if(calculateLegal(i,j,1).size() == 0) {
-				JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+			//	JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
 				gameEnded = true;
 				startGame = false;
 				return;
 			}
 
 			//dionisisMove();
-			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
+			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
 			
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
