@@ -103,7 +103,7 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, 1, 2, true, 2); //no idea
+			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
 			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
 			                					if(pairList.size() == 0) {
@@ -165,7 +165,7 @@ public class Board {
 			}
 
 			//dionisisMove();
-			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, 1, 2, true, 2); //no idea
+			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
 			
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
@@ -193,42 +193,6 @@ public class Board {
 			//startGame = false;
 			return;
 		//}
-    }
-    
-    public void dionisisMove() {
-    	
-    	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList;
-    	
-    	for(int i = 0;i < N; i++) {
-			for(int j = 0;j < N; j++) {
-				if(squares[i][j].getBackground() == Color.RED) {
-					pairList = calculateLegal(i,j,2);
-					if(pairList.size() == 0) {
-						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
-						startGame = false;
-						gameEnded = true;
-						return;
-					}
-					
-					Entry<Integer,Integer> nextMove = getRandomElement(pairList);
-					
-					System.out.println("tha paw sto " + nextMove.getKey() + nextMove.getValue());
-					squares[i][j].setBackground(Color.BLACK);
-					squares[i][j].setIcon(null);
-					changeColor(nextMove.getKey(),nextMove.getValue(),2);
-					
-					pairList = calculateLegal(nextMove.getKey(),nextMove.getValue(),2);
-					if(pairList.size() == 0) {
-						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
-						startGame = false;
-						gameEnded = true;
-						return;
-					}
-
-					return;
-				}
-			}
-    	}
     }
     
 public void dionisisMoveTo(int k, int l) {
@@ -296,7 +260,7 @@ public void dionisisMoveTo(int k, int l) {
     }
     
     
-    public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int depth, int alpha, int beta, boolean maximizingPlayer, int maximizingColor) {
+    public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int depth, Double alpha, Double beta, boolean maximizingPlayer, int maximizingColor) {
     	SimpleEntry<Entry<Integer, Integer>, Double> entry = null;
     		    
     	if(depth == 0 || gameEnded) {
