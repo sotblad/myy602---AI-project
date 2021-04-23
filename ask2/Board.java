@@ -69,6 +69,7 @@ public class Board {
 		                		}
 	                		}else if(setPlayerStart1) {
 								Object source = e.getSource();
+								
 		                		for(int i = 0;i < N; i++) {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
@@ -85,6 +86,7 @@ public class Board {
 		                		}
 	                		}else if(setPlayerStart2) {
 								Object source = e.getSource();
+								
 		                		for(int i = 0;i < N; i++) {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
@@ -102,39 +104,12 @@ public class Board {
 		                		}
 	                		}else if(startGame) {
 								Object source = e.getSource();
+								
 		                		for(int i = 0;i < N; i++) {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
 		                					if(displayMoves) {
-			                					if(squares[i][j].getBackground() == Color.CYAN) {
-			                						highlightLegal(calculateLegal(i,j,1));
-			                						P1makeMove = true;
-			                						displayMoves = false;
-				                					return;
-			                					}
-			                				}else if(P1makeMove) {
-			                					if(squares[i][j].getBackground() == Color.GRAY) {
-			                						for(int k =0;k<N;k++) {
-			                							for(int l =0;l< N;l++) {
-			        		                				if(squares[k][l].getBackground() == Color.GRAY) {
-			        		                					squares[k][l].setBackground(Color.WHITE);
-			        		                				}else if(squares[k][l].getBackground() == Color.CYAN) {
-			        		                					squares[k][l].setBackground(Color.BLACK);
-			        		                				}
-			                							}
-			                						}
-			                						squares[i][j].setBackground(Color.CYAN);
-			                						if(calculateLegal(i,j,1).size() == 0) {
-			                							JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
-			                							gameEnded = true;
-			                							startGame = false;
-			                							return;
-			                						}
-			                			
-			                						displayMoves = true;
-			                						P1makeMove = false;
-			                						dionisisMove();
-			                					}
+			                					playerMove(i,j);
 			                				}
 		                				}
 		                			}
@@ -146,6 +121,50 @@ public class Board {
         }
     }
     
+    public void playerMove(int i, int j) {
+    	if(squares[i][j].getBackground() == Color.CYAN) {
+			highlightLegal(calculateLegal(i,j,1));
+		}
+    	
+		if(squares[i][j].getBackground() == Color.GRAY) {
+			for(int k =0;k<N;k++) {
+				for(int l =0;l< N;l++) {
+    				if(squares[k][l].getBackground() == Color.GRAY) {
+    					squares[k][l].setBackground(Color.WHITE);
+    				}else if(squares[k][l].getBackground() == Color.CYAN) {
+    					squares[k][l].setBackground(Color.BLACK);
+    				}
+				}
+			}
+			squares[i][j].setBackground(Color.CYAN);
+			if(calculateLegal(i,j,1).size() == 0) {
+				JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+				gameEnded = true;
+				startGame = false;
+				return;
+			}
+
+			dionisisMove();
+		}
+    }
+    
+    public void playerMoveTo(int i, int j) {
+		for(int k =0;k<N;k++) {
+			for(int l =0;l< N;l++) {
+   				if(squares[k][l].getBackground() == Color.CYAN) {
+    				squares[k][l].setBackground(Color.BLACK);
+   				}
+			}
+		}
+		squares[i][j].setBackground(Color.CYAN);
+		if(calculateLegal(i,j,1).size() == 0) {
+			JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+			gameEnded = true;
+			startGame = false;
+			return;
+		}
+    }
+    
     public void dionisisMove() {
     	
     	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList;
@@ -155,12 +174,11 @@ public class Board {
 				if(squares[i][j].getBackground() == Color.RED) {
 					pairList = calculateLegal(i,j,2);
 					if(pairList.size() == 0) {
-						JOptionPane.showMessageDialog(null, "Kys noob you lost by PLAYER. nmsl");
+						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
 						startGame = false;
 						gameEnded = true;
 						return;
 					}
-					// TODO: pare to legal moves list, dialekse mia random kai metakinise ton dionisi
 					
 					Entry<Integer,Integer> nextMove = getRandomElement(pairList);
 					
@@ -171,13 +189,37 @@ public class Board {
 					
 					pairList = calculateLegal(nextMove.getKey(),nextMove.getValue(),2);
 					if(pairList.size() == 0) {
-						JOptionPane.showMessageDialog(null, "Kys noob you lost by PLAYER. nmsl");
+						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
 						startGame = false;
 						gameEnded = true;
 						return;
 					}
+
+					return;
+				}
+			}
+    	}
+    }
+    
+public void dionisisMoveTo(int k, int l) {
+    	
+    	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList;
+    	
+    	for(int i = 0;i < N; i++) {
+			for(int j = 0;j < N; j++) {
+				if(squares[i][j].getBackground() == Color.RED) {
+					squares[i][j].setBackground(Color.BLACK);
+					squares[i][j].setIcon(null);
+					changeColor(k,l,2);
 					
-			//		JOptionPane.showMessageDialog(null, "eimai o dionisis kai vriskomai sto " + i + " " + j + " kenes theseis: " + pairList.size());
+					pairList = calculateLegal(k,l,2);
+					if(pairList.size() == 0) {
+						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
+						startGame = false;
+						gameEnded = true;
+						return;
+					}
+
 					return;
 				}
 			}
@@ -209,6 +251,14 @@ public class Board {
     public final JComponent getGui() {
         return gui;
     }
+    
+    public void minimax(int depth, int alpha, int beta, boolean maximizingPlayer, int maximizingColor) {
+    	if(depth == 0 || gameEnded)
+    	
+    	return;
+    }
+    
+    
     
     public java.util.List<java.util.Map.Entry<Integer,Integer>> calculateLegal(int i, int j, int player) {
     	
