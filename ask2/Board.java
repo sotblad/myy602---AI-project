@@ -103,8 +103,14 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2, 1, 2, true, 2); //no idea
+			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, 1, 2, true, 2); //no idea
 			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
+			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
+			                					if(pairList.size() == 0) {
+			                						gameEnded = true;
+			                						startGame = false;
+			                						System.out.println("TELIKO FINISH");
+			                					}
 			                					return;
 		                					}
 		                				}
@@ -118,6 +124,12 @@ public class Board {
 		                				if(source == squares[i][j]) {
 		                					if(displayMoves) {
 			                					playerMove(i,j);
+			                					List<Entry<Integer, Integer>> pairList = calculateLegal(i,j,1);
+			                					if(pairList.size() == 0) {
+			                						gameEnded = true;
+			                						startGame = false;
+			                						JOptionPane.showMessageDialog(null, "TO PAIXNIDI TELEIWSE, NIKITIS O DIONISIS");
+			                					}
 			                				}
 		                				}
 		                			}
@@ -153,9 +165,16 @@ public class Board {
 			}
 
 			//dionisisMove();
-			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2, 1, 2, true, 2); //no idea
+			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(4, 1, 2, true, 2); //no idea
 			
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
+			List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
+			if(pairList.size() == 0) {
+				gameEnded = true;
+				startGame = false;
+				JOptionPane.showMessageDialog(null, "TO PAIXNIDI TELEIWSE, NIKISES TON DIONISI");
+			}
+			
 		}
     }
     
@@ -168,12 +187,12 @@ public class Board {
 			}
 		}
 		squares[i][j].setBackground(Color.CYAN);
-		if(calculateLegal(i,j,1).size() == 0) {
-			JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
-			gameEnded = true;
-			startGame = false;
+		//if(calculateLegal(i,j,1).size() == 0) {
+			//JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmslEDWWW");
+			//gameEnded = true;
+			//startGame = false;
 			return;
-		}
+		//}
     }
     
     public void dionisisMove() {
@@ -225,9 +244,9 @@ public void dionisisMoveTo(int k, int l) {
 					
 					pairList = calculateLegal(k,l,2);
 					if(pairList.size() == 0) {
-						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
-						startGame = false;
-						gameEnded = true;
+					//	JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
+					//	startGame = false;
+					//	gameEnded = true;
 						return;
 					}
 
@@ -298,10 +317,10 @@ public void dionisisMoveTo(int k, int l) {
     					List<Entry<Integer, Integer>> moves = calculateLegal(i,j,2);
     					
     					if(moves.size() == 0) {
-    						JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
-    						startGame = false;
-    						gameEnded = true;
-    						return null;
+    						//JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike MESA MINIMAX");
+    					//	startGame = false;
+    					//	gameEnded = true;
+    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(maximizingColor));
     					}
     					Entry<Integer,Integer> best_move = getRandomElement(moves);
     					
@@ -336,10 +355,10 @@ public void dionisisMoveTo(int k, int l) {
     					List<Entry<Integer, Integer>> moves = calculateLegal(i,j,1);
     					
     					if(moves.size() == 0) {
-    						JOptionPane.showMessageDialog(null, "exases noobo");
-    						startGame = false;
-    						gameEnded = true;
-    						return null;
+    					//	JOptionPane.showMessageDialog(null, "exases noobo MINIMAX");
+    					//	startGame = false;
+    					//	gameEnded = true;
+    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(maximizingColor));
     					}
     					Entry<Integer,Integer> best_move = getRandomElement(moves);
     					
