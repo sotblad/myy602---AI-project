@@ -14,19 +14,22 @@ public class ask1 {
 	    public List<Node> children;//array will keep children
 	    public Node parent;//parent to start the tree
 	    public boolean found;
+	    public Integer g;
 
 	    public Node(List<Integer> data) {
 	        children = new ArrayList<>();
 	        this.found = false;
 	        this.data = data;
 	        this.opNum = 0;
+	        this.g = 0;
 	    }
 
-	    public Node addChild(int opNum, Node node) {
+	    public Node addChild(int opNum, int g, Node node) {
 	        children.add(node);
 	        node.parent = this;
 	        node.found = false;
 	        node.opNum = opNum;
+	        node.g = g;
 	        return this;
 	    }
 	    
@@ -122,6 +125,20 @@ public class ask1 {
 		return AL; // return b
 	}
 	
+	public static int searchMinNodeG(List<Node> listnode) {
+		int min = 10000000;
+		int minIndex = -1;
+		
+		for(int i = 0;i < listnode.size();i++) {
+			if(listnode.get(i).g < min) {
+				min = listnode.get(i).g;
+				minIndex = i;
+			}
+		}
+		
+		return minIndex;
+	}
+	
 	public static List<Integer> createTree(int N, Node root) {
 		if(N == 1)
 			return null;
@@ -140,17 +157,16 @@ public class ask1 {
 		nodelist.add(root);
 		
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
-		
+		int g = 0;
 		while(nodelist.size() != 0) {
-			currNode = nodelist.get(0); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
-
+			currNode = nodelist.get(searchMinNodeG(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
+			
 			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
 				List<Integer> operData = operator(j+1,N,currNode.getData());
 				Node createdChild = new Node(operData);
 				
-				
 				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
-					currNode.addChild((j+1),createdChild); // eftiaksa 1 paidi
+					currNode.addChild((j+1),currNode.g+1,createdChild); // eftiaksa 1 paidi
 					nodelist.add(createdChild); // vale to paidi sto "queue"
 					lista.add(operData);
 					totalExpansions += 1;
@@ -171,7 +187,7 @@ public class ask1 {
 					}
 				}
 			}
-			nodelist.remove(0);
+			nodelist.remove(searchMinNodeG(nodelist));
 		}
 		return Tlist;
 	}
