@@ -37,8 +37,8 @@ public class Board {
     Board(JPanel getGui, int arrayLen) {
     	gui = getGui;
     	N = arrayLen;
-    	PlayerScore = 30;
-    	DionisisScore = 40;
+    	PlayerScore = 0;
+    	DionisisScore = 0;
     	squares =new JButton[N][N];
     	board = new JPanel(new GridLayout(0, N));
         initializeGui();
@@ -166,7 +166,7 @@ public class Board {
 
 			//dionisisMove();
 			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true, 2); //no idea
-			
+			System.out.println("EDWWW " +test.getValue());
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
 			if(pairList.size() == 0) {
@@ -267,12 +267,6 @@ public void dionisisMoveTo(int k, int l) {
     		//System.out.println(evaluate(maximizingColor));
     		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(maximizingColor));
     	}
-    	JButton[][] b = new JButton[N][N];
-    	for(int k = 0;k<squares.length;k++) {
-    		for(int l =0;l<squares[k].length;l++) {
-    			b[k][l] = squares[k][l];
-    		}
-    	}
     	
     	if(maximizingPlayer) {
     		for(int i = 0;i < N; i++) {
@@ -302,10 +296,6 @@ public void dionisisMoveTo(int k, int l) {
     							max_eval = (double) current_eval;
     							best_move = moves.get(k);
     						}
-    						Double getAlpha = Math.max(alpha, current_eval);
-    						if(beta <= getAlpha) {
-    							break;
-    						}	
     					}
     					return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(best_move,max_eval);
     				}
@@ -340,10 +330,6 @@ public void dionisisMoveTo(int k, int l) {
     							min_eval = (double) current_eval;
     							best_move = moves.get(k);
     						}
-    						Double getBeta = Math.min(beta, current_eval);
-    						if(getBeta <= alpha) {
-    							break;
-    						}	
     					}
     					return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(best_move,min_eval);
     				}
