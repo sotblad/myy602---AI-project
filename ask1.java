@@ -14,7 +14,8 @@ public class ask1 {
 	    public List<Node> children;//array will keep children
 	    public Node parent;//parent to start the tree
 	    public boolean found;
-	    public Integer g,h;
+	    public Integer g;
+	    public Double h;
 
 	    public Node(List<Integer> data) {
 	        children = new ArrayList<>();
@@ -22,7 +23,7 @@ public class ask1 {
 	        this.data = data;
 	        this.opNum = 0;
 	        this.g = 0;
-	        this.h = 0;
+	        this.h = 0.0;
 	    }
 
 	    public Node addChild(Node node) {
@@ -56,7 +57,7 @@ public class ask1 {
 	    	this.g = g;
 	    }
 	    
-	    public void setH(int h) {
+	    public void setH(Double h) {
 	    	this.h = h;
 	    }
 	}
@@ -150,10 +151,31 @@ public class ask1 {
 		return minIndex;
 	}
 	
-	public static int searchMinNodeH(List<Node> listnode) {
-		//TODO
+	public static Double heuristic(List<Integer> currentState, List<Integer> initState) {
+		Double currStateNumber = 0.0;
+		Double initStateNumber = 0.0;
+		Double goalNumber = 0.0;
+		for (int i = 0;i <currentState.size();i++) { // turn lists to numbers. example [3,2,1] -> 321
+			currStateNumber = 10*currStateNumber + currentState.get(i);
+			initStateNumber = 10*initStateNumber + initState.get(i);
+			goalNumber = 10*goalNumber + i+1;
+		}
+		
+		Double dist = (currStateNumber-goalNumber)/initStateNumber;
+
+		return dist;
+	}
+	
+	public static int searchMinNodeF(List<Node> listnode) {
+		Double min = Double.POSITIVE_INFINITY;
 		int minIndex = -1;
 		
+		for(int i = 0;i < listnode.size();i++) {
+			if((listnode.get(i).g + listnode.get(i).h) < min) {
+				min = listnode.get(i).g + listnode.get(i).h;
+				minIndex = i;
+			}
+		}
 		return minIndex;
 	}
 	
@@ -232,7 +254,7 @@ public class ask1 {
 		
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
 		while(nodelist.size() != 0) {
-			currNode = nodelist.get(searchMinNodeH(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
+			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			
 			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
 				List<Integer> operData = operator(j+1,N,currNode.getData());
@@ -241,6 +263,7 @@ public class ask1 {
 				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
 					currNode.addChild(createdChild); // eftiaksa 1 paidi
 					createdChild.setOpNum(j+1);
+					createdChild.setH(heuristic(createdChild.getData(),want));
 					nodelist.add(createdChild); // vale to paidi sto "queue"
 					lista.add(operData);
 					totalExpansions += 1;
@@ -261,7 +284,7 @@ public class ask1 {
 					}
 				}
 			}
-			nodelist.remove(searchMinNodeH(nodelist));
+			nodelist.remove(searchMinNodeF(nodelist));
 		}
 		return Tlist;
 	}
@@ -275,7 +298,7 @@ public class ask1 {
 		
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
-		
+		System.out.println("~~~~~~~~~~~~~~~~~~UCS~~~~~~~~~~~~~~~~~~~");
 		List<Integer> UCS = createTree(N, new Node(initState));
 		
 		Collections.reverse(UCS);
@@ -287,12 +310,22 @@ public class ask1 {
 			}
 		}
 		
-	//	Astar(N,new Node(initState));
+		System.out.println("~~~~~~~~~~~~~~~~~A-Star~~~~~~~~~~~~~~~~~");
 		
-	/*	
+		List<Integer> ASTAR = Astar(N,new Node(initState));
+		Collections.reverse(ASTAR);
+		for(int i = 0;i < ASTAR.size();i++) {
+			if(i != ASTAR.size()-1) {
+				System.out.print("T(" + ASTAR.get(i) + "), ");
+			}else {
+				System.out.println("T(" + ASTAR.get(i) + ")");
+			}
+		}
+		
+
 		// CHECK OTI TO PATH EINAI SWSTO
 		// kwdikas gia testing tous telestes
-		while(true) {
+	/*	while(true) {
 			System.out.println("Please enter the index for the T operator (0 or less to exit): ");
 			
 			String Tindex = Scan.nextLine();
@@ -305,7 +338,7 @@ public class ask1 {
 			initState = result;
 			System.out.println("Calling T(" + Tindex + "), returned b = " + result);
 		}
-		Scan.close();
-		*/
+		Scan.close();*/
+		
 	}
 }
