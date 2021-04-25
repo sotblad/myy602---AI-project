@@ -14,7 +14,7 @@ public class ask1 {
 	    public List<Node> children;//array will keep children
 	    public Node parent;//parent to start the tree
 	    public boolean found;
-	    public Integer g;
+	    public Integer g,h;
 
 	    public Node(List<Integer> data) {
 	        children = new ArrayList<>();
@@ -22,14 +22,13 @@ public class ask1 {
 	        this.data = data;
 	        this.opNum = 0;
 	        this.g = 0;
+	        this.h = 0;
 	    }
 
-	    public Node addChild(int opNum, int g, Node node) {
+	    public Node addChild(Node node) {
 	        children.add(node);
 	        node.parent = this;
 	        node.found = false;
-	        node.opNum = opNum;
-	        node.g = g;
 	        return this;
 	    }
 	    
@@ -47,6 +46,18 @@ public class ask1 {
 	    
 	    public List<Integer> getData() {
 	    	return this.data;
+	    }
+	    
+	    public void setOpNum(int opNum) {
+	    	this.opNum = opNum;
+	    }
+	    
+	    public void setG(int g) {
+	    	this.g = g;
+	    }
+	    
+	    public void setH(int h) {
+	    	this.h = h;
 	    }
 	}
 
@@ -139,6 +150,13 @@ public class ask1 {
 		return minIndex;
 	}
 	
+	public static int searchMinNodeH(List<Node> listnode) {
+		//TODO
+		int minIndex = -1;
+		
+		return minIndex;
+	}
+	
 	public static List<Integer> createTree(int N, Node root) {
 		if(N == 1)
 			return null;
@@ -157,7 +175,6 @@ public class ask1 {
 		nodelist.add(root);
 		
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
-		int g = 0;
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeG(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			
@@ -166,7 +183,9 @@ public class ask1 {
 				Node createdChild = new Node(operData);
 				
 				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
-					currNode.addChild((j+1),currNode.g+1,createdChild); // eftiaksa 1 paidi
+					currNode.addChild(createdChild); // eftiaksa 1 paidi
+					createdChild.setOpNum(j+1);
+					createdChild.setG(currNode.g+1);
 					nodelist.add(createdChild); // vale to paidi sto "queue"
 					lista.add(operData);
 					totalExpansions += 1;
@@ -194,28 +213,57 @@ public class ask1 {
 	
 	
 	/* EDW EINAI TO ALFA ASTERAKI */
-	public static int Astar(int bestCost, Node root) {
-		if(root.getChildren().size() == 0)
-			return -1;
-		List<Node> open = new ArrayList<Node>();
-		List<Node> close = new ArrayList<Node>();
+	public static List<Integer> Astar(int N, Node root) {
+		if(N == 1)
+			return null;
+		List<Integer> Tlist = new ArrayList<Integer>();
 		List<Integer> want = new ArrayList<Integer>(root.getData());
 		Collections.sort(want);
-		int g = bestCost;
-		
-		open.add(root);
-		
-		System.out.println(g);
-		
-		/*while(open.size() != 0) {
-			Node currentNode = open.remove(0); 
-			
-			//for(int i = 0;i<)
-			
-		}*/
-		
 
-		return 0;
+		if(root.getData().equals(want)) {
+			System.out.println("Initial state is sorted. Exiting");
+			return Tlist;
+		}
+		int totalExpansions = 0;
+		Node currNode = root;
+		
+		List<Node> nodelist = new ArrayList<Node>();
+		nodelist.add(root);
+		
+		List<List<Integer>> lista = new ArrayList<List<Integer>>();
+		while(nodelist.size() != 0) {
+			currNode = nodelist.get(searchMinNodeH(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
+			
+			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
+				List<Integer> operData = operator(j+1,N,currNode.getData());
+				Node createdChild = new Node(operData);
+				
+				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
+					currNode.addChild(createdChild); // eftiaksa 1 paidi
+					createdChild.setOpNum(j+1);
+					nodelist.add(createdChild); // vale to paidi sto "queue"
+					lista.add(operData);
+					totalExpansions += 1;
+					
+					if(operData.equals(want)) {
+						createdChild.found = true;
+						
+						int layer = 0;
+						currNode = createdChild;
+						while(currNode.getParent() != null) { // count how many layers there are
+							Tlist.add(currNode.getOpNum());
+							currNode = currNode.getParent();
+							layer += 1;
+						}
+						System.out.println("Cost: " + layer);
+						System.out.println("Total expansions: " + totalExpansions);
+						return Tlist;
+					}
+				}
+			}
+			nodelist.remove(searchMinNodeH(nodelist));
+		}
+		return Tlist;
 	}
 	
 	public static void main(String[] args) {
@@ -227,21 +275,20 @@ public class ask1 {
 		
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
-		// ftiaxnei to dentro
-		Node root = new Node(initState); // ftiaxnei thn riza me contents to array pou tou dwsame
 		
-		List<Integer> path = createTree(N, root);
+		List<Integer> UCS = createTree(N, new Node(initState));
 		
-		Collections.reverse(path);
-		for(int i = 0;i < path.size();i++) {
-			if(i != path.size()-1) {
-				System.out.print("T(" + path.get(i) + "), ");
+		Collections.reverse(UCS);
+		for(int i = 0;i < UCS.size();i++) {
+			if(i != UCS.size()-1) {
+				System.out.print("T(" + UCS.get(i) + "), ");
 			}else {
-				System.out.println("T(" + path.get(i) + ")");
+				System.out.println("T(" + UCS.get(i) + ")");
 			}
 		}
 		
-		Astar(path.size(),root);
+	//	Astar(N,new Node(initState));
+		
 	/*	
 		// CHECK OTI TO PATH EINAI SWSTO
 		// kwdikas gia testing tous telestes
@@ -250,7 +297,7 @@ public class ask1 {
 			
 			String Tindex = Scan.nextLine();
 			if(Integer.parseInt(Tindex) <= 0) { // if <=0 exit
-				System.out.println("İyi şanslar, güle güle.👋👋");
+				System.out.println("-");
 				break;
 			}
 			
