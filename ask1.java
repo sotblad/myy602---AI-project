@@ -162,7 +162,6 @@ public class ask1 {
 		}
 		
 		Double dist = (currStateNumber-goalNumber)/initStateNumber;
-
 		return dist;
 	}
 	
@@ -263,7 +262,7 @@ public class ask1 {
 				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
 					currNode.addChild(createdChild); // eftiaksa 1 paidi
 					createdChild.setOpNum(j+1);
-					createdChild.setH(heuristic(createdChild.getData(),want));
+					createdChild.setH(heuristic(createdChild.getData(),root.getData()));
 					nodelist.add(createdChild); // vale to paidi sto "queue"
 					lista.add(operData);
 					totalExpansions += 1;
