@@ -162,6 +162,12 @@ public class ask1 {
 		}
 		
 		Double dist = (currStateNumber-goalNumber)/initStateNumber;
+		currStateNumber = currStateNumber/10;
+		goalNumber = goalNumber/10;
+		initStateNumber = initStateNumber/10;
+		dist -= (currStateNumber-goalNumber)/initStateNumber;
+		
+		//System.out.println(dist);
 		return dist;
 	}
 	
