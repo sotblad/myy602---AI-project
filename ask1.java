@@ -154,20 +154,27 @@ public class ask1 {
 	public static Double heuristic(List<Integer> currentState, List<Integer> initState) {
 		Double currStateNumber = 0.0;
 		Double initStateNumber = 0.0;
+		Double maxNumber = 0.0;
 		Double goalNumber = 0.0;
 		for (int i = 0;i <currentState.size();i++) { // turn lists to numbers. example [3,2,1] -> 321
 			currStateNumber = 10*currStateNumber + currentState.get(i);
 			initStateNumber = 10*initStateNumber + initState.get(i);
 			goalNumber = 10*goalNumber + i+1;
+			maxNumber = 10*maxNumber + currentState.size()-i;
 		}
 		
 		Double dist = (currStateNumber-goalNumber)/initStateNumber;
+		Double maxDist = (maxNumber-goalNumber)/initStateNumber;
+		
 		currStateNumber = currStateNumber/10;
 		goalNumber = goalNumber/10;
 		initStateNumber = initStateNumber/10;
 		dist -= (currStateNumber-goalNumber)/initStateNumber;
 		
-		//System.out.println(dist);
+		if(currentState.get(0) == 1) {
+			dist = maxDist;
+		}
+		
 		return dist;
 	}
 	
