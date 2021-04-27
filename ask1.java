@@ -156,6 +156,8 @@ public class ask1 {
 		Double initStateNumber = 0.0;
 		Double maxNumber = 0.0;
 		Double goalNumber = 0.0;
+		int prevnum = -1;
+		int point = 0;
 		for (int i = 0;i <currentState.size();i++) { // turn lists to numbers. example [3,2,1] -> 321
 			currStateNumber = 10*currStateNumber + currentState.get(i);
 			initStateNumber = 10*initStateNumber + initState.get(i);
@@ -163,18 +165,22 @@ public class ask1 {
 			maxNumber = 10*maxNumber + currentState.size()-i;
 		}
 		
-		Double dist = (currStateNumber-goalNumber)/initStateNumber;
-		Double maxDist = (maxNumber-goalNumber)/initStateNumber;
-		
-		currStateNumber = currStateNumber/10;
-		goalNumber = goalNumber/10;
-		initStateNumber = initStateNumber/10;
-		dist -= (currStateNumber-goalNumber)/initStateNumber;
-		
-		if(currentState.get(0) == 1) {
-			dist = maxDist;
+		for (int i = currentState.size(); i > 0;i--) { // turn lists to numbers. example [3,2,1] -> 321
+			if(currentState.get(i-1) == prevnum+1) {
+				point++;
+			}
+			prevnum = currentState.get(i-1);
 		}
 		
+		double temp = 1.0 / (currentState.size()-1);
+		double dist = 1 - (point*temp);
+
+		if(currentState.get(0) == 1) {
+			dist = 1.0;
+		}
+		if(goalNumber.equals(currStateNumber)) {
+			dist = 0.0;
+		}
 		return dist;
 	}
 	
@@ -283,6 +289,7 @@ public class ask1 {
 					totalExpansions += 1;
 					
 					if(operData.equals(want)) {
+						System.out.println(heuristic(createdChild.getData(), root.getData()));
 						createdChild.found = true;
 						
 						int layer = 0;
