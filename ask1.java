@@ -7,7 +7,6 @@
 import java.util.*;
 
 public class ask1 {
-	
 	static class Node {
 	    public List<Integer> data; //data for storage
 	    public Integer opNum;
@@ -158,21 +157,34 @@ public class ask1 {
 		Double goalNumber = 0.0;
 		int prevnum = -1;
 		int point = 0;
+		int ace = -1;
 		for (int i = 0;i <currentState.size();i++) { // turn lists to numbers. example [3,2,1] -> 321
 			currStateNumber = 10*currStateNumber + currentState.get(i);
 			initStateNumber = 10*initStateNumber + initState.get(i);
 			goalNumber = 10*goalNumber + i+1;
 			maxNumber = 10*maxNumber + currentState.size()-i;
 		}
-		
-		for (int i = currentState.size(); i > 0;i--) { // turn lists to numbers. example [3,2,1] -> 321
-			if(currentState.get(i-1) == prevnum+1) {
-				point++;
+		for (int i = 0; i < currentState.size();i++) {
+			if(currentState.get(i) == 1) {
+				ace = i;
 			}
-			prevnum = currentState.get(i-1);
 		}
 		
-		double temp = 1.0 / (currentState.size()-1);
+		for (int i = ace; i >= 0;i--) {
+			if(currentState.get(i) == prevnum+1) {
+				point++;
+			}
+			prevnum = currentState.get(i);
+		}
+		for (int i = ace+1; i < currentState.size();i++) {
+			if(currentState.get(i) == prevnum+1) {
+				point++;
+			}
+			
+			prevnum = currentState.get(i);
+		}
+		
+		double temp = 1.0 / (currentState.size());
 		double dist = 1 - (point*temp);
 
 		if(currentState.get(0) == 1) {
@@ -181,6 +193,8 @@ public class ask1 {
 		if(goalNumber.equals(currStateNumber)) {
 			dist = 0.0;
 		}
+		
+		dist = dist*1.5;
 		return dist;
 	}
 	
@@ -203,7 +217,7 @@ public class ask1 {
 		List<Integer> Tlist = new ArrayList<Integer>();
 		List<Integer> want = new ArrayList<Integer>(root.getData());
 		Collections.sort(want);
-
+		
 		if(root.getData().equals(want)) {
 			System.out.println("Initial state is sorted. Exiting");
 			return Tlist;
@@ -259,7 +273,6 @@ public class ask1 {
 		List<Integer> Tlist = new ArrayList<Integer>();
 		List<Integer> want = new ArrayList<Integer>(root.getData());
 		Collections.sort(want);
-
 		if(root.getData().equals(want)) {
 			System.out.println("Initial state is sorted. Exiting");
 			return Tlist;
@@ -271,6 +284,11 @@ public class ask1 {
 		nodelist.add(root);
 		
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
+		
+//		root.setH(heuristic(root.getData(),root.getData()));
+//		double distance = root.h/1.5 * root.getData().size();
+//		System.out.println(distance);
+		
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			
@@ -289,7 +307,6 @@ public class ask1 {
 					totalExpansions += 1;
 					
 					if(operData.equals(want)) {
-						System.out.println(heuristic(createdChild.getData(), root.getData()));
 						createdChild.found = true;
 						
 						int layer = 0;
@@ -342,6 +359,7 @@ public class ask1 {
 				System.out.println("T(" + ASTAR.get(i) + ")");
 			}
 		}
+
 		
 
 		// CHECK OTI TO PATH EINAI SWSTO
