@@ -158,43 +158,49 @@ public class ask1 {
 		int prevnum = -1;
 		int point = 0;
 		int ace = -1;
+		int afteracepoint = 0;
+		int afterace = 0;
 		for (int i = 0;i <currentState.size();i++) { // turn lists to numbers. example [3,2,1] -> 321
 			currStateNumber = 10*currStateNumber + currentState.get(i);
 			initStateNumber = 10*initStateNumber + initState.get(i);
 			goalNumber = 10*goalNumber + i+1;
 			maxNumber = 10*maxNumber + currentState.size()-i;
 		}
-		for (int i = 0; i < currentState.size();i++) {
+		for (int i = 0; i < currentState.size();i++) {		//finds where the ace is
 			if(currentState.get(i) == 1) {
 				ace = i;
 			}
 		}
 		
-		for (int i = ace; i >= 0;i--) {
+		for (int i = ace; i >= 0;i--) {		//search before ace
 			if(currentState.get(i) == prevnum+1) {
 				point++;
 			}
 			prevnum = currentState.get(i);
 		}
-		for (int i = ace+1; i < currentState.size();i++) {
+		for (int i = ace+1; i < currentState.size();i++) {		//search after ace
+			afterace++;
 			if(currentState.get(i) == prevnum+1) {
 				point++;
+				afteracepoint++;
 			}
-			
 			prevnum = currentState.get(i);
 		}
 		
+		int penalty = afterace - afteracepoint;
+
+		
 		double temp = 1.0 / (currentState.size());
 		double dist = 1 - (point*temp);
-
+		
 		if(currentState.get(0) == 1) {
 			dist = 1.0;
 		}
 		if(goalNumber.equals(currStateNumber)) {
 			dist = 0.0;
 		}
-		
-		dist = dist*1.5;
+		dist = dist * (initState.size()-1);
+		dist = dist + penalty*0.1;
 		return dist;
 	}
 	
@@ -203,11 +209,13 @@ public class ask1 {
 		int minIndex = -1;
 		
 		for(int i = 0;i < listnode.size();i++) {
+			//System.out.println(listnode.get(i).getData() + " " + (listnode.get(i).g + listnode.get(i).h));
 			if((listnode.get(i).g + listnode.get(i).h) < min) {
 				min = listnode.get(i).g + listnode.get(i).h;
 				minIndex = i;
 			}
 		}
+		//System.out.println(listnode.get(minIndex).getData());
 		return minIndex;
 	}
 	
@@ -288,14 +296,14 @@ public class ask1 {
 //		root.setH(heuristic(root.getData(),root.getData()));
 //		double distance = root.h/1.5 * root.getData().size();
 //		System.out.println(distance);
-		
+		root.setH(heuristic(root.getData(),root.getData()));
+//		System.out.println(root.h);
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
-			
+			nodelist.remove(currNode);
 			for(int j = 1;j < N;j++) { //ftiaxnei 2 paidia sto currNode
 				List<Integer> operData = operator(j+1,N,currNode.getData());
 				Node createdChild = new Node(operData);
-				
 				if(j+1 != currNode.getOpNum() && !lista.contains(operData)) {
 					currNode.addChild(createdChild); // eftiaksa 1 paidi
 					createdChild.setOpNum(j+1);
@@ -322,7 +330,6 @@ public class ask1 {
 					}
 				}
 			}
-			nodelist.remove(searchMinNodeF(nodelist));
 		}
 		return Tlist;
 	}
@@ -336,17 +343,17 @@ public class ask1 {
 		
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
-		System.out.println("~~~~~~~~~~~~~~~~~~UCS~~~~~~~~~~~~~~~~~~~");
-		List<Integer> UCS = createTree(N, new Node(initState));
-		
-		Collections.reverse(UCS);
-		for(int i = 0;i < UCS.size();i++) {
-			if(i != UCS.size()-1) {
-				System.out.print("T(" + UCS.get(i) + "), ");
-			}else {
-				System.out.println("T(" + UCS.get(i) + ")");
-			}
-		}
+//		System.out.println("~~~~~~~~~~~~~~~~~~UCS~~~~~~~~~~~~~~~~~~~");
+//		List<Integer> UCS = createTree(N, new Node(initState));
+//		
+//		Collections.reverse(UCS);
+//		for(int i = 0;i < UCS.size();i++) {
+//			if(i != UCS.size()-1) {
+//				System.out.print("T(" + UCS.get(i) + "), ");
+//			}else {
+//				System.out.println("T(" + UCS.get(i) + ")");
+//			}
+//		}
 		
 		System.out.println("~~~~~~~~~~~~~~~~~A-Star~~~~~~~~~~~~~~~~~");
 		
