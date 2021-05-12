@@ -103,6 +103,8 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
+			                					DionisisScore = 0;
+			                	    			PlayerScore = 0;
 			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, 2); //no idea
 			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
@@ -165,6 +167,8 @@ public class Board {
 			}
 
 			//dionisisMove();
+			DionisisScore = 0;
+			PlayerScore = 0;
 			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, 2); //no idea
 			System.out.println("EDWWW " +test.getValue());
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
@@ -252,10 +256,23 @@ public void dionisisMoveTo(int k, int l) {
     // MINIMAX UNDER CONSTRUCTION
     
     public Double evaluate(int maximizingPlayer) { // 1 -> P1, 2 -> dionisis
-    	if(maximizingPlayer == 1) {
-    		return (double) (PlayerScore - DionisisScore);
+    	List<Entry<Integer, Integer>> moves1 = null;
+    	List<Entry<Integer, Integer>> moves2 = null;
+    	for(int i = 0;i < N; i++) {
+			for(int j = 0;j < N; j++) {
+				if(squares[i][j].getBackground() == Color.CYAN) {
+					moves1 = calculateLegal(i,j,1);
+				}
+				if(squares[i][j].getBackground() == Color.RED) {
+					moves2 = calculateLegal(i,j,2);
+				}
+			}
+		}
+    	System.out.println(moves2.size());
+    	if(maximizingPlayer == 2) {
+    		return (double) (moves2.size() - moves1.size());
     	}else {
-    		return (double) (DionisisScore - PlayerScore);
+    		return (double) -(moves1.size() - moves2.size());
     	}
     }
     
@@ -270,7 +287,7 @@ public void dionisisMoveTo(int k, int l) {
     		//System.out.println(evaluate(maximizingColor));
     		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(player));
     	}
-    	
+    	//JOptionPane.showMessageDialog(null, "Set the starting point of Player1");
     	if(player == 2) {
     		for(int i = 0;i < N; i++) {
     			for(int j = 0;j < N; j++) {
@@ -279,7 +296,8 @@ public void dionisisMoveTo(int k, int l) {
     					y = j;
     					moves = calculateLegal(i,j,2);
     					if(moves.size() == 0) {
-    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(player));
+    						DionisisScore += 1;
+    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(2));
     					}
     				}
     			}
@@ -292,7 +310,8 @@ public void dionisisMoveTo(int k, int l) {
     					y = j;
     					moves = calculateLegal(i,j,1);
     					if(moves.size() == 0) {
-    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(player));
+    						PlayerScore += 1;
+    						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(1));
     					}
     				}
     			}
