@@ -105,7 +105,7 @@ public class Board {
 			                					JOptionPane.showMessageDialog(null, "game starts");
 			                					DionisisScore = 0;
 			                	    			PlayerScore = 0;
-			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, 2); //no idea
+			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2); //no idea
 			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
 			                					if(pairList.size() == 0) {
@@ -125,12 +125,21 @@ public class Board {
 		                			for(int j = 0;j < N; j++) {
 		                				if(source == squares[i][j]) {
 		                					if(displayMoves) {
+		  
 			                					playerMove(i,j);
-			                					List<Entry<Integer, Integer>> pairList = calculateLegal(i,j,1);
-			                					if(pairList.size() == 0) {
-			                						gameEnded = true;
-			                						startGame = false;
-			                						JOptionPane.showMessageDialog(null, "TO PAIXNIDI TELEIWSE, NIKITIS O DIONISIS");
+			                					if(startGame) {
+				                					for(int k =0;k<N;k++) {
+				                						for(int l =0;l< N;l++) {
+				                		    				if(squares[k][l].getBackground() == Color.RED) {
+				                		    					if(calculateLegal(k,l,2).size() == 0) {
+				                		    						JOptionPane.showMessageDialog(null, "NIKITIS O PEKTIS");
+				                		    						gameEnded = true;
+				                		    						startGame = false;
+				                		    						return;
+				                		    					};
+				                		    				}
+				                						}
+				                					}
 			                					}
 			                				}
 		                				}
@@ -144,8 +153,10 @@ public class Board {
     }
     
     public void playerMove(int i, int j) {
+    	List<Entry<Integer, Integer>> legal = calculateLegal(i,j,1);
+    	
     	if(squares[i][j].getBackground() == Color.CYAN) {
-			highlightLegal(calculateLegal(i,j,1));
+			highlightLegal(legal);
 		}
     	
 		if(squares[i][j].getBackground() == Color.GRAY) {
@@ -159,24 +170,31 @@ public class Board {
 				}
 			}
 			squares[i][j].setBackground(Color.CYAN);
-			if(calculateLegal(i,j,1).size() == 0) {
-			//	JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmsl");
+
+			DionisisScore = 0;
+			PlayerScore = 0;
+			
+			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2); //no idea
+			if(test.getKey() == null) {
+				
+				JOptionPane.showMessageDialog(null, "NIKITIS O PEKTIS");
 				gameEnded = true;
 				startGame = false;
 				return;
 			}
-
-			//dionisisMove();
-			DionisisScore = 0;
-			PlayerScore = 0;
-			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(7, 2); //no idea
-			System.out.println("EDWWW " +test.getValue());
 			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
-			List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
-			if(pairList.size() == 0) {
-				gameEnded = true;
-				startGame = false;
-				JOptionPane.showMessageDialog(null, "TO PAIXNIDI TELEIWSE, NIKISES TON DIONISI");
+			
+			for(int k =0;k<N;k++) {
+				for(int l =0;l< N;l++) {
+    				if(squares[k][l].getBackground() == Color.CYAN) {
+    					if(calculateLegal(k,l,1).size() == 0) {
+    						JOptionPane.showMessageDialog(null, "NIKITIS O DIONISIS");
+    						gameEnded = true;
+    						startGame = false;
+    						return;
+    					};
+    				}
+				}
 			}
 			
 		}
@@ -191,12 +209,7 @@ public class Board {
 			}
 		}
 		squares[i][j].setBackground(Color.CYAN);
-		//if(calculateLegal(i,j,1).size() == 0) {
-			//JOptionPane.showMessageDialog(null, "Kys noob you lost by Dionisis. nmslEDWWW");
-			//gameEnded = true;
-			//startGame = false;
-			return;
-		//}
+		return;
     }
     
 public void dionisisMoveTo(int k, int l) {
@@ -206,17 +219,13 @@ public void dionisisMoveTo(int k, int l) {
     	for(int i = 0;i < N; i++) {
 			for(int j = 0;j < N; j++) {
 				if(squares[i][j].getBackground() == Color.RED) {
+					pairList = calculateLegal(i,j,2);
+					if(pairList.size() == 0) {
+						return;
+					}
 					squares[i][j].setBackground(Color.BLACK);
 					squares[i][j].setIcon(null);
 					changeColor(k,l,2);
-					
-					pairList = calculateLegal(k,l,2);
-					if(pairList.size() == 0) {
-					//	JOptionPane.showMessageDialog(null, "Sygxaritiria, o dionisis eksoudeterothike");
-					//	startGame = false;
-					//	gameEnded = true;
-						return;
-					}
 
 					return;
 				}
@@ -268,7 +277,7 @@ public void dionisisMoveTo(int k, int l) {
 				}
 			}
 		}
-    	System.out.println(moves2.size());
+    	//System.out.println(moves2.size());
     	if(maximizingPlayer == 2) {
     		return (double) (moves2.size() - moves1.size());
     	}else {
@@ -277,13 +286,13 @@ public void dionisisMoveTo(int k, int l) {
     }
     
     
-    public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int depth, int player) {
+    public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int player) {
     	int x = 0;
     	int y = 0;
     	List<Entry<Integer, Integer>> moves = null;
     	Entry<Integer,Integer> best_move = null;
     		    
-    	if(depth == 0 || gameEnded) {
+    	if(gameEnded) {
     		//System.out.println(evaluate(maximizingColor));
     		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(player));
     	}
@@ -322,7 +331,7 @@ public void dionisisMoveTo(int k, int l) {
     		Double max_eval = Double.NEGATIVE_INFINITY;
     		for(int k = 0;k < moves.size();k++) {
     			dionisisMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
-    			SimpleEntry<Entry<Integer, Integer>, Double> pair = minimax(depth-1,1); // minimax go to MIN
+    			SimpleEntry<Entry<Integer, Integer>, Double> pair = minimax(1); // minimax go to MIN
 
     			//undo
     			squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
@@ -341,7 +350,7 @@ public void dionisisMoveTo(int k, int l) {
     		Double min_eval = Double.POSITIVE_INFINITY;
  			for(int k = 0;k < moves.size();k++) {
     			playerMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
-    			SimpleEntry<Entry<Integer, Integer>, Double> pair = minimax(depth-1,2); //minimax go to MAX
+    			SimpleEntry<Entry<Integer, Integer>, Double> pair = minimax(2); //minimax go to MAX
     						
     			//undo
     			squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
