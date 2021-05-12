@@ -166,36 +166,75 @@ public class ask1 {
 			goalNumber = 10*goalNumber + i+1;
 			maxNumber = 10*maxNumber + currentState.size()-i;
 		}
+		
 		for (int i = 0; i < currentState.size();i++) {		//finds where the ace is
 			if(currentState.get(i) == 1) {
 				ace = i;
 			}
 		}
 		
-		for (int i = ace; i >= 0;i--) {		//search before ace
-			if(currentState.get(i) == prevnum+1) {
+//search before ace kanonika
+		
+		for (int i = ace; i >= 0;i--) {							
+			if(currentState.get(i) == prevnum+1 || currentState.get(i) == prevnum-1) {
 				point++;
 			}
 			prevnum = currentState.get(i);
 		}
 		for (int i = ace+1; i < currentState.size();i++) {		//search after ace
 			afterace++;
-			if(currentState.get(i) == prevnum+1) {
+			if(currentState.get(i) == prevnum+1 || currentState.get(i) == prevnum-1) {
 				point++;
 				afteracepoint++;
 			}
 			prevnum = currentState.get(i);
 		}
 		
-		int penalty = afterace - afteracepoint;
-
+//search after ace anapoda
 		
+		int anapodopoint = 0;
+		for (int i = currentState.size()-1; i > ace;i--) {
+			if(currentState.get(i) == prevnum+1) {
+				anapodopoint++;
+			}
+			prevnum = currentState.get(i);
+		}
+		for (int i = 0; i <= ace;i++) {						//search before ace
+			if(currentState.get(i) == prevnum+1) {
+				anapodopoint++;
+			}
+			prevnum = currentState.get(i);
+		}
+		
+		int pointbrwspisw = 0;
+		for (int i = 0; i < currentState.size()-1;i++) {
+			if(currentState.get(i) == prevnum+1) {
+				pointbrwspisw++;
+			}
+			prevnum = currentState.get(i);
+		}
+		for (int i = currentState.size()-1; i > 0;i--) {						//search before ace
+			if(currentState.get(i) == prevnum+1) {
+				pointbrwspisw++;
+			}
+			prevnum = currentState.get(i);
+		}
+		
+		
+		
+		
+		
+		
+		//System.out.println("point : " + point + " anapodopoint : " + anapodopoint);
+		if(anapodopoint > point)
+			point = anapodopoint;
+		else if(pointbrwspisw > point)
+			point = pointbrwspisw;
+		
+		int penalty = afterace - afteracepoint;
 		double temp = 1.0 / (currentState.size());
 		double dist = 1 - (point*temp);
-		
-		if(currentState.get(0) == 1) {
-			dist = 1.0;
-		}
+
 		if(goalNumber.equals(currStateNumber)) {
 			dist = 0.0;
 		}
@@ -297,7 +336,7 @@ public class ask1 {
 //		double distance = root.h/1.5 * root.getData().size();
 //		System.out.println(distance);
 		root.setH(heuristic(root.getData(),root.getData()));
-//		System.out.println(root.h);
+		System.out.println(root.h);
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			nodelist.remove(currNode);
