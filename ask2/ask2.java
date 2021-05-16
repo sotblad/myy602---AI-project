@@ -4,6 +4,9 @@
  * Sotirios Panagiotou, 4456 
 */
 
+/*ypothetoume oti oi kinhseis pou mporei na kanei o paikths kai o ypologisths einai 1 tetragwnaki thn fora pros oles tis kateuthinseis.
+Epishs gia na emfanistoun oi epitreptes kinhseis prepei na patithei to kyano koutaki ki epeita gia na ginei h kinhsh prepei na patithei kapoio gkri koutaki*/
+
 import javax.swing.*;
 
 public class ask2 {
@@ -24,7 +27,7 @@ public class ask2 {
 	
     public static void main(String[] args) {
     	
-    	int N = 7;
+    	int N = 5;
     	
     	blackPreset = setBlackPreset(N, blackPreset);
     	
