@@ -27,18 +27,11 @@ public class Board {
 	Boolean setPlayerStart2 = false;
 	Boolean startGame = false;
 	Boolean displayMoves = false;
-	Boolean P1makeMove = false;
 	Boolean gameEnded = false;
-	Object P1;
-	Object Dionisis;
-	int PlayerScore;
-	int DionisisScore;
     
     Board(JPanel getGui, int arrayLen) {
     	gui = getGui;
     	N = arrayLen;
-    	PlayerScore = 0;
-    	DionisisScore = 0;
     	squares =new JButton[N][N];
     	board = new JPanel(new GridLayout(0, N));
         initializeGui();
@@ -82,7 +75,6 @@ public class Board {
 		                				if(source == squares[i][j]) {
 		                					if(squares[i][j].getBackground() != Color.BLACK) {
 			                					changeColor(i,j,1);
-			                					P1 = squares[i][j];
 			                					setPlayerStart1 = false;
 			                					setPlayerStart2 = true; // set Player2 start point
 			                					JOptionPane.showMessageDialog(null, "Set the starting point of Player2");
@@ -103,15 +95,13 @@ public class Board {
 			                					startGame = true;
 			                					displayMoves = true;
 			                					JOptionPane.showMessageDialog(null, "game starts");
-			                					DionisisScore = 0;
-			                	    			PlayerScore = 0;
 			                					SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2); //no idea
-			                					dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
+			                					AIMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			                					List<Entry<Integer, Integer>> pairList = calculateLegal(test.getKey().getKey(),test.getKey().getValue(),2);
 			                					if(pairList.size() == 0) {
 			                						gameEnded = true;
 			                						startGame = false;
-			                						System.out.println("TELIKO FINISH");
+			                						System.out.println("GAME ENDED");
 			                					}
 			                					return;
 		                					}
@@ -132,7 +122,7 @@ public class Board {
 				                						for(int l =0;l< N;l++) {
 				                		    				if(squares[k][l].getBackground() == Color.RED) {
 				                		    					if(calculateLegal(k,l,2).size() == 0) {
-				                		    						JOptionPane.showMessageDialog(null, "NIKITIS O PEKTIS");
+				                		    						JOptionPane.showMessageDialog(null, "You won!");
 				                		    						gameEnded = true;
 				                		    						startGame = false;
 				                		    						return;
@@ -171,24 +161,21 @@ public class Board {
 			}
 			squares[i][j].setBackground(Color.CYAN);
 
-			DionisisScore = 0;
-			PlayerScore = 0;
-			
 			SimpleEntry<Entry<Integer, Integer>, Double> test = minimax(2); //no idea
 			if(test.getKey() == null) {
 				
-				JOptionPane.showMessageDialog(null, "NIKITIS O PEKTIS");
+				JOptionPane.showMessageDialog(null, "You won!");
 				gameEnded = true;
 				startGame = false;
 				return;
 			}
-			dionisisMoveTo(test.getKey().getKey(),test.getKey().getValue());
+			AIMoveTo(test.getKey().getKey(),test.getKey().getValue());
 			
 			for(int k =0;k<N;k++) {
 				for(int l =0;l< N;l++) {
     				if(squares[k][l].getBackground() == Color.CYAN) {
     					if(calculateLegal(k,l,1).size() == 0) {
-    						JOptionPane.showMessageDialog(null, "NIKITIS O DIONISIS");
+    						JOptionPane.showMessageDialog(null, "You lost by AI!");
     						gameEnded = true;
     						startGame = false;
     						return;
@@ -212,7 +199,7 @@ public class Board {
 		return;
     }
     
-public void dionisisMoveTo(int k, int l) {
+public void AIMoveTo(int k, int l) {
     	
     	java.util.List<java.util.Map.Entry<Integer,Integer>> pairList;
     	
@@ -224,7 +211,6 @@ public void dionisisMoveTo(int k, int l) {
 						return;
 					}
 					squares[i][j].setBackground(Color.BLACK);
-					squares[i][j].setIcon(null);
 					changeColor(k,l,2);
 
 					return;
@@ -259,12 +245,7 @@ public void dionisisMoveTo(int k, int l) {
         return gui;
     }
     
-    
-    
-    
-    // MINIMAX UNDER CONSTRUCTION
-    
-    public Double evaluate(int maximizingPlayer) { // 1 -> P1, 2 -> dionisis
+    public Double evaluate(int maximizingPlayer) { // 1 -> P1, 2 -> AI
     	List<Entry<Integer, Integer>> moves1 = null;
     	List<Entry<Integer, Integer>> moves2 = null;
     	for(int i = 0;i < N; i++) {
@@ -277,14 +258,13 @@ public void dionisisMoveTo(int k, int l) {
 				}
 			}
 		}
-    	//System.out.println(moves2.size());
+
     	if(maximizingPlayer == 2) {
     		return (double) (moves2.size() - moves1.size());
     	}else {
     		return (double) -(moves1.size() - moves2.size());
     	}
     }
-    
     
     public SimpleEntry<Entry<Integer, Integer>, Double> minimax(int player) {
     	int x = 0;
@@ -293,10 +273,9 @@ public void dionisisMoveTo(int k, int l) {
     	Entry<Integer,Integer> best_move = null;
     		    
     	if(gameEnded) {
-    		//System.out.println(evaluate(maximizingColor));
     		return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(player));
     	}
-    	//JOptionPane.showMessageDialog(null, "Set the starting point of Player1");
+
     	if(player == 2) {
     		for(int i = 0;i < N; i++) {
     			for(int j = 0;j < N; j++) {
@@ -305,7 +284,6 @@ public void dionisisMoveTo(int k, int l) {
     					y = j;
     					moves = calculateLegal(i,j,2);
     					if(moves.size() == 0) {
-    						DionisisScore += 1;
     						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(2));
     					}
     				}
@@ -319,7 +297,6 @@ public void dionisisMoveTo(int k, int l) {
     					y = j;
     					moves = calculateLegal(i,j,1);
     					if(moves.size() == 0) {
-    						PlayerScore += 1;
     						return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(null,evaluate(1));
     					}
     				}
@@ -327,15 +304,14 @@ public void dionisisMoveTo(int k, int l) {
     		}
     	}
     	
-    	if(player == 2) { //dionisis - MAX
+    	if(player == 2) { //AI - MAX
     		Double max_eval = Double.NEGATIVE_INFINITY;
     		for(int k = 0;k < moves.size();k++) {
-    			dionisisMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
+    			AIMoveTo(moves.get(k).getKey(),moves.get(k).getValue());
     			SimpleEntry<Entry<Integer, Integer>, Double> pair = minimax(1); // minimax go to MIN
 
     			//undo
     			squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
-    			squares[moves.get(k).getKey()][moves.get(k).getValue()].setIcon(null);
     			changeColor(x,y,2);
     						
     			if(pair.getValue() > max_eval) {
@@ -354,7 +330,6 @@ public void dionisisMoveTo(int k, int l) {
     						
     			//undo
     			squares[moves.get(k).getKey()][moves.get(k).getValue()].setBackground(Color.WHITE);
-    			squares[moves.get(k).getKey()][moves.get(k).getValue()].setIcon(null);
     			changeColor(x,y,1);
     						
     			if(pair.getValue() < min_eval) {
@@ -365,12 +340,6 @@ public void dionisisMoveTo(int k, int l) {
  			return new AbstractMap.SimpleEntry<java.util.Map.Entry<Integer,Integer>, Double>(best_move,min_eval);
     	}
     }
-    
-    
-    
-    
-    // end minimax
-    
     
     public java.util.List<java.util.Map.Entry<Integer,Integer>> calculateLegal(int i, int j, int player) {
     	
@@ -472,7 +441,6 @@ public void dionisisMoveTo(int k, int l) {
     		squares[i][j].setBackground(Color.CYAN);
     	}else if(color == 2) {
     		squares[i][j].setBackground(Color.RED);
-    		squares[i][j].setIcon( new ImageIcon("/Users/sotirisp/Desktop/niar.jpg") );
     	}else if(color == 3) {
     		squares[i][j].setBackground(Color.GRAY);
     		
