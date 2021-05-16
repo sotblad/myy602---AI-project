@@ -219,13 +219,7 @@ public class ask1 {
 			}
 			prevnum = currentState.get(i);
 		}
-		
-		
-		
-		
-		
-		
-		//System.out.println("point : " + point + " anapodopoint : " + anapodopoint);
+
 		if(anapodopoint > point)
 			point = anapodopoint;
 		else if(pointbrwspisw > point)
@@ -248,13 +242,11 @@ public class ask1 {
 		int minIndex = -1;
 		
 		for(int i = 0;i < listnode.size();i++) {
-			//System.out.println(listnode.get(i).getData() + " " + (listnode.get(i).g + listnode.get(i).h));
 			if((listnode.get(i).g + listnode.get(i).h) < min) {
 				min = listnode.get(i).g + listnode.get(i).h;
 				minIndex = i;
 			}
 		}
-		//System.out.println(listnode.get(minIndex).getData());
 		return minIndex;
 	}
 	
@@ -332,11 +324,8 @@ public class ask1 {
 		
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
 		
-//		root.setH(heuristic(root.getData(),root.getData()));
-//		double distance = root.h/1.5 * root.getData().size();
-//		System.out.println(distance);
 		root.setH(heuristic(root.getData(),root.getData()));
-		System.out.println(root.h);
+
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			nodelist.remove(currNode);
@@ -382,17 +371,17 @@ public class ask1 {
 		
 		System.out.println("~~~~~~~~~~~~~~\nInitial State: " + initState + "\nN: " + N);
 		
-//		System.out.println("~~~~~~~~~~~~~~~~~~UCS~~~~~~~~~~~~~~~~~~~");
-//		List<Integer> UCS = createTree(N, new Node(initState));
-//		
-//		Collections.reverse(UCS);
-//		for(int i = 0;i < UCS.size();i++) {
-//			if(i != UCS.size()-1) {
-//				System.out.print("T(" + UCS.get(i) + "), ");
-//			}else {
-//				System.out.println("T(" + UCS.get(i) + ")");
-//			}
-//		}
+		System.out.println("~~~~~~~~~~~~~~~~~~UCS~~~~~~~~~~~~~~~~~~~");
+		List<Integer> UCS = createTree(N, new Node(initState));
+		
+		Collections.reverse(UCS);
+		for(int i = 0;i < UCS.size();i++) {
+			if(i != UCS.size()-1) {
+				System.out.print("T(" + UCS.get(i) + "), ");
+			}else {
+				System.out.println("T(" + UCS.get(i) + ")");
+			}
+		}
 		
 		System.out.println("~~~~~~~~~~~~~~~~~A-Star~~~~~~~~~~~~~~~~~");
 		
@@ -405,25 +394,6 @@ public class ask1 {
 				System.out.println("T(" + ASTAR.get(i) + ")");
 			}
 		}
-
-		
-
-		// CHECK OTI TO PATH EINAI SWSTO
-		// kwdikas gia testing tous telestes
-	/*	while(true) {
-			System.out.println("Please enter the index for the T operator (0 or less to exit): ");
-			
-			String Tindex = Scan.nextLine();
-			if(Integer.parseInt(Tindex) <= 0) { // if <=0 exit
-				System.out.println("-");
-				break;
-			}
-			
-			List<Integer> result = operator(Integer.parseInt(Tindex), N, initState);
-			initState = result;
-			System.out.println("Calling T(" + Tindex + "), returned b = " + result);
-		}
-		Scan.close();*/
 		
 	}
 }
