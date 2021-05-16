@@ -233,7 +233,7 @@ public class ask1 {
 			dist = 0.0;
 		}
 		dist = dist * (initState.size()-1);
-		dist = dist + penalty*0.1;
+		dist = dist -((currentState.size()-1) * 0.05) + penalty*0.05;
 		return dist;
 	}
 	
@@ -325,7 +325,7 @@ public class ask1 {
 		List<List<Integer>> lista = new ArrayList<List<Integer>>();
 		
 		root.setH(heuristic(root.getData(),root.getData()));
-
+		System.out.println("Calculated h of root node: " + root.h);
 		while(nodelist.size() != 0) {
 			currNode = nodelist.get(searchMinNodeF(nodelist)); //pernei to 1o pedi apo ti lista (pou doulevei san queue)
 			nodelist.remove(currNode);
